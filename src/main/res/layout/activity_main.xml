@@ -61,14 +61,14 @@
 
     <ImageView
         android:id="@+id/loginIcon"
-        android:layout_width="68dp"
-        android:layout_height="64dp"
+        android:layout_width="400dp"
+        android:layout_height="150dp"
         android:importantForAccessibility="no"
         app:layout_constraintBottom_toTopOf="@+id/loginFields"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_logo"/>
+        android:src="@drawable/logoo"/>
 
     <Button
         android:id="@+id/newAccountButton"

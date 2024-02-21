@@ -17,8 +17,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
 import com.example.project_part2.entities.Post;
+import com.example.project_part2.entities.User;
 
 import java.util.List;
 
@@ -96,7 +98,10 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
             holder.rvComments.setLayoutManager(layoutManager);
 
             // Create an adapter for the comments
-            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments(), Integer.parseInt(current.getAuthor().getProfilePictureUri().toString()));
+//            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments(), Integer.parseInt(current.getAuthor().getProfilePictureUri().toString()));
+            // use default user icon for comment author instead of custom user icon.
+            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments(), MainActivity.registeredUser.getProfilePictureUri());
+//            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments(), R.drawable.ddog1);
             holder.rvComments.setAdapter(commentAdapter);
 
             // Add a new comment

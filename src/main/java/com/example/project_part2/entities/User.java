@@ -1,84 +1,95 @@
 package com.example.project_part2.entities;
 
+import android.content.Context;
 import android.net.Uri;
+
+import com.example.project_part2.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * the class representation of a user in the app
- */
+
 public class User {
-    private final String id;
+    private String id;
     private String user_pass;
     private String firstName;
     private String lastName;
-    private Uri profilePicture;
+    private String login_username;
+    private Uri pfp;
 
 
-    /**
-     * default constructor
-     */
+
     public User() {
         this("foo", "bar", null, "admin", "admin");
+        login_username = "admin";
     }
 
-    /**
-     * 
-     * @param firstName user's first name
-     * @param lastName  user's last name
-     * @param profilePicture user's profile picture
-     */
-    public User(String firstName, String lastName, Uri profilePicture, String id, String pass) {
+
+    public User(String firstName, String lastName, Uri pfp, String id, String pass) {
         this.id = id; // change when implementing a DB
         this.user_pass = pass;
         this.firstName = firstName;
         this.lastName= lastName;
-        this.profilePicture = profilePicture;
+        this.pfp = pfp;
     }
 
-    /**
-     * Json constructor
-     * @param userJson - the jsonObject holding the user Info
-     */
+
     public User(JSONObject userJson) throws JSONException {
-        // id and pass don't get passed in .json
-        this.id = null;
-        user_pass = null;
-        this.firstName = userJson.getString("firstName");
-        this.lastName = userJson.getString("lastName");
-        if (userJson.getString("imageUri").equals("")) {
-            this.profilePicture = null;
+
+        this.firstName = userJson.getString("first_name");
+
+        this.lastName = userJson.getString("last_name");
+
+
+        if (userJson.has("pfp")) {
+            if (userJson.getString("pfp").equals("")) {
+                this.pfp = null;
+            } else {
+                this.pfp = Uri.parse(userJson.getString("pfp"));
+            }
         } else {
-            this.profilePicture = Uri.parse(userJson.getString("imageUri"));
+            this.pfp = null;
+        }
+
+
+        if (userJson.has("user_pass")) {
+            if (userJson.getString("user_pass").equals("")) {
+                this.user_pass = null;
+            } else {
+                this.user_pass = userJson.getString("user_pass");
+            }
+        } else {
+            this.user_pass = null;
+        }
+
+
+        if (userJson.has("id")) {
+            if (userJson.getString("id").equals("")) {
+                this.id = null;
+            } else {
+                this.id = userJson.getString("id");
+            }
+        } else {
+            this.id = null;
         }
     }
 
-    /**
-     * first name getter
-     * @return a copy of the firstName String
-     */
+
     public String getFirstName() {
         return this.firstName;
     }
 
-    /**
-     * last name getter
-     * @return a copy of the lastName String
-     */
+
     public String getLastName() {
         return this.lastName;
     }
 
-    /**
-     * profile picture getter
-     * @return a copy of the profile picture's Uri object
-     */
+
     public Uri getProfilePictureUri() {
-        if (this.profilePicture == null) {
+        if (this.pfp == null) {
             return null;
         }
-        String uriString = this.profilePicture.toString();
+        String uriString = this.pfp.toString();
         return Uri.parse(uriString);
     }
 
@@ -90,8 +101,11 @@ public class User {
         return  this.user_pass;
     }
 
-    public void setProfilePicture(Uri profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setId (String id) {
+        this.id = id;
+    }
+    public void setProfilePicture(Uri pfp) {
+        this.pfp = pfp;
     }
 
     public void setFirstName(String firstName) {
@@ -104,5 +118,13 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getLogin_username() {
+        return login_username;
+    }
+
+    public void setLogin_username(String login_username) {
+        this.login_username = login_username;
     }
 }

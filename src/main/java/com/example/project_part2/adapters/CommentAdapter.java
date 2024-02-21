@@ -1,6 +1,7 @@
 package com.example.project_part2.adapters;
 
 import android.app.AlertDialog;
+import android.net.Uri;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +24,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private final List<String> comments;
     private final LayoutInflater mInflater;
 
-    private final int author_pfp;
+    private final Uri author_pfp;
 
-    public CommentAdapter(LayoutInflater inflater, List<String> comments, int author_pfp) {
+    public CommentAdapter(LayoutInflater inflater, List<String> comments, Uri author_pfp) {
         mInflater = inflater;
         this.comments = comments;
         this.author_pfp = author_pfp;
@@ -36,7 +37,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
         ImageView fd = itemView.findViewById(R.id.ivProfileComment);
-        fd.setImageResource(author_pfp);
+        fd.setImageURI(author_pfp);
         return new CommentViewHolder(itemView);
     }
 

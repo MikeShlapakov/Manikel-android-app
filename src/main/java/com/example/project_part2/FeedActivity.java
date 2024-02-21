@@ -53,11 +53,20 @@ public class FeedActivity extends AppCompatActivity {
 
     private void setUserInfoFeed() {
         TextView activeUserInfo = findViewById(R.id.activeUserInfo);
-        String fullName = MainActivity.registeredUser.getFirstName() + " " + MainActivity.registeredUser.getLastName();
+//        String fullName = MainActivity.registeredUser.getFirstName() + " " + MainActivity.registeredUser.getLastName();
+        String fullName = MainActivity.registeredUser.getId();
         activeUserInfo.setText(fullName);
 
         ImageView activeUserPic = findViewById(R.id.activeUserPic);
-        activeUserPic.setImageResource(R.drawable.ddog1);
+        // use hard-coded image for pfp in top left
+        activeUserPic.setImageURI(MainActivity.registeredUser.getProfilePictureUri());
+//        activeUserPic.setImageResource(R.drawable.ddog1);;
+
+//        try {
+//            activeUserPic.setImageURI((Util.ReadPfpUriFromJson(FeedActivity.this)));
+//        } catch (JSONException | IOException e) {
+//        throw new RuntimeException(e);
+//        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +84,22 @@ public class FeedActivity extends AppCompatActivity {
             throw new RuntimeException("IO failed");
         }
 
-        // set the dark mode button
+//        // set the dark mode button
+//        SwitchMaterial darkModeSwitch = findViewById(R.id.darkModeSwitch);
+//        darkModeSwitch.setChecked(isDarkMode());
+//
+//        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            if (isChecked) {
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//            } else {
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//            }
+//        });
+
         SwitchMaterial darkModeSwitch = findViewById(R.id.darkModeSwitch);
+
+        darkModeSwitch.setOnCheckedChangeListener(null);
+
         darkModeSwitch.setChecked(isDarkMode());
 
         darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -86,6 +109,7 @@ public class FeedActivity extends AppCompatActivity {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         });
+
 
         // set the recycler with the provided posts
         setRecyclerFeed(posts);
@@ -139,7 +163,7 @@ public class FeedActivity extends AppCompatActivity {
                     } else {
                         Uri imageUri = Uri.parse(imageUriString);
                         Post newPost = new Post(postText, imageUri, MainActivity.registeredUser);
-                        postList.add(newPost);
+                         postList.add(newPost);
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
@@ -148,7 +172,6 @@ public class FeedActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    // TODO: add save picture to external storage
     public void uploadPic(View view) {
         // init the gallery upload intent
         Intent pickImageIntent = new Intent(Intent.ACTION_PICK);
@@ -170,7 +193,6 @@ public class FeedActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // TODO: fix image thumbnail bug
         // check if the result is the result to the image pick request, and that the result is ok
         if (requestCode == UPLOAD_PIC_REQUEST && resultCode == RESULT_OK) {
             // identify camera upload because data will be null

@@ -21,7 +21,7 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:importantForAccessibility="no"
-            android:src="@drawable/default_profile_pic" />
+            android:src="@drawable/ddog1" />
 
         <LinearLayout
             android:layout_width="0dp"

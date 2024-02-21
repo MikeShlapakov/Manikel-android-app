@@ -27,7 +27,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:importantForAccessibility="no"
-                android:src="@drawable/default_profile_pic" />
+                android:src="@drawable/ddog1" />
 
             <TextView
                 android:id="@+id/activeUserInfo"

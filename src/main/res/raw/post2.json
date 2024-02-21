@@ -2,9 +2,9 @@
   "text": "Exploring the majestic waterfalls of Iceland",
   "image": "",
   "author": {
-    "firstName": "Jane",
-    "lastName": "Doe",
-    "imageUri": ""
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "pfp": ""
   },
   "timeStamp": "Tue Feb 13 12:00:00 PST 2024"
 }

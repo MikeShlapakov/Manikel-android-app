@@ -15,10 +15,6 @@ import com.example.project_part2.entities.User;
 public class MainActivity extends AppCompatActivity {
     public static User registeredUser = new User();
 
-    int magic (int n) {
-        return n;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +22,6 @@ public class MainActivity extends AppCompatActivity {
         // set the logo color to purple
         ImageView logo = findViewById(R.id.loginIcon);
         logo.setColorFilter(R.color.AppPrimary);
-
-        registeredUser.setProfilePicture(Uri.parse(Integer.toString(R.drawable.dog)));
     }
 
     public void goRegister(View view) {
@@ -38,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     public void goFeed(View view) {
         EditText id = findViewById(R.id.usernameLogin);
         EditText pass = findViewById(R.id.passwordLogin);
-        if (id.getText().toString().equals(registeredUser.getId()) && pass.getText().toString().equals(registeredUser.getPass())) {
+//        if (id.getText().toString().equals(registeredUser.getId()) && pass.getText().toString().equals(registeredUser.getPass())) {
+        if (id.getText().toString().equals(registeredUser.getLogin_username()) && pass.getText().toString().equals(registeredUser.getPass())) {
             Intent intent = new Intent(this, FeedActivity.class);
             startActivity(intent);
         } else {

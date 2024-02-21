@@ -60,8 +60,8 @@ public class Post{
             this.image = Uri.parse(postJson.getString("image"));
         }
 
-        if (authorJson.getString("imageUri").equals("")) {
-            authorJson.put("imageUri", R.drawable.ddog1);
+        if (authorJson.getString("pfp").equals("")) {
+            authorJson.put("pfp", R.drawable.ddog1);
         }
         this.comments = new ArrayList<>();
     }

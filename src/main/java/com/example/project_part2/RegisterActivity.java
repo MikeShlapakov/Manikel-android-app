@@ -17,6 +17,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.project_part2.util.Util;
+
+import org.json.JSONException;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,17 +31,12 @@ public class RegisterActivity extends AppCompatActivity {
     public final static int UPLOAD_PIC_REQUEST = 1;
 
     private TextView invalidTextView;
+    private TextView idEditText;
     private EditText passwordEditText;
     private EditText verifyEditText;
+    private EditText userNameEditText;
 
-    /**
-     * the constructor for the Activity.
-     * it sets up the EditText variables, and attached them to the their specific watcher
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
-     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +50,11 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText.addTextChangedListener(passwordWatcher);
         verifyEditText = findViewById(R.id.verifyPasswordRegister);
         verifyEditText.addTextChangedListener(verifyWatcher);
+        idEditText = findViewById(R.id.displayNameRegister);
+        userNameEditText = findViewById(R.id.userNameRegister);
     }
 
-    /**
-     * watches the password field, and validates the field after typing
-     */
+
     private final TextWatcher passwordWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -69,9 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     };
 
-    /**
-     * watches the verify field and validates the field after typing
-     */
+
     private final TextWatcher verifyWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -85,10 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     };
 
-    /**
-     * this function validates the password in the password EditText
-     * @param password the string extracted from the password field
-     * @return true if the password is valid:
+    /*
      * 1. at least 1 uppercase char
      * 2. at least 1 lowercase char
      * 3. at least 1 digit
@@ -114,11 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
         return validPassword;
     }
 
-    /**
-     * this function checks the verify string is the same as the string in the password textview
-     * @param verify the text collected from verify field
-     * @return true if the fields is valid, false otherwise
-     */
+
     private boolean validateVerify(String verify) {
         String password = passwordEditText.getText().toString();
 
@@ -134,10 +124,6 @@ public class RegisterActivity extends AppCompatActivity {
         return validVerify;
     }
 
-    /**
-     * this functions checks the validity of all fields, and registers the user.
-     * @param view the view context
-     */
     public void register(View view) {
         String verify = verifyEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -145,6 +131,11 @@ public class RegisterActivity extends AppCompatActivity {
         boolean validPassword = validatePassword(password);
 
         if (validPassword && validVerify) {
+
+            MainActivity.registeredUser.setId(idEditText.getText().toString());
+            MainActivity.registeredUser.setLogin_username(userNameEditText.getText().toString());
+            MainActivity.registeredUser.setUser_pass(passwordEditText.getText().toString());
+
             Intent intent = new Intent(this, FeedActivity.class);
             startActivity(intent);
         } else {
@@ -153,13 +144,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * this functions declares intent to let user upload an image
-     * the result is collected in onActivityResult
-     *
-     * @param view the view context
-     *
-     */
     public void uploadPic(View view) {
         // init the gallery upload intent
         Intent pickImageIntent = new Intent(Intent.ACTION_PICK);
@@ -178,21 +162,13 @@ public class RegisterActivity extends AppCompatActivity {
         startActivityForResult(combinedIntent, UPLOAD_PIC_REQUEST);
     }
 
-    /**
-     * check the returned image, and use it as the new profile pic
-     * @param requestCode The integer request code originally supplied to
-     *                    startActivityForResult(), allowing you to identify who this
-     *                    result came from.
-     * @param resultCode The integer result code returned by the child activity
-     *                   through its setResult().
-     * @param data An Intent, which can return result data to the caller
-     *               (various data can be attached to Intent "extras").
-     *
-     */
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // TODO: add saving image functionality
+
+        Uri pic_taken = null;
         // check if the result is the result to the image pick request, and that the result is ok
         if (requestCode == UPLOAD_PIC_REQUEST && resultCode == RESULT_OK) {
             // identify camera upload because data will be null
@@ -205,12 +181,13 @@ public class RegisterActivity extends AppCompatActivity {
                 File imageFile = new File(internalStorageDir, fileName);
                 try (FileOutputStream outputStream = new FileOutputStream(imageFile)) {
                     // save the image to the desired location
-                    thumbnail.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                    Uri imagePath = Uri.parse(imageFile.getAbsolutePath());
+                    if (thumbnail != null) {
+                        thumbnail.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                    }
+
+                    pic_taken = Uri.parse(imageFile.getAbsolutePath());
                     ImageView profilePicView = findViewById(R.id.profilePicRegister);
                     profilePicView.setImageURI(null); // clear image view cache
-                    profilePicView.setImageURI(imagePath);
-                    profilePicView.setColorFilter(Color.TRANSPARENT);
 
                 } catch (IOException e){
                     e.printStackTrace();
@@ -218,12 +195,26 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             } else {
                 // get the new image URI
-                Uri newImageUri = data.getData();
-                // update the imageView to display the selected image
-                ImageView profilePicView = findViewById(R.id.profilePicRegister);
-                profilePicView.setImageURI(newImageUri);
-                profilePicView.setColorFilter(Color.TRANSPARENT);
+                pic_taken = data.getData();
             }
+
+
+            // update the imageView to display the selected image
+            ImageView profilePicView = findViewById(R.id.profilePicRegister);
+            profilePicView.setImageURI(pic_taken);
+            profilePicView.setColorFilter(Color.TRANSPARENT);
+
+            if (pic_taken != null) {
+                MainActivity.registeredUser.setProfilePicture(pic_taken);
+            }
+
+//            try {
+//                if (pic_taken != null) {
+//                    Util.WritePfpToJson(RegisterActivity.this, pic_taken);
+//                }
+//            } catch (JSONException | IOException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 }
