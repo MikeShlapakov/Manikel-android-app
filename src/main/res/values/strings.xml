@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Project - part 2</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Log in</string>
+    <string name="newAccountButton">Create new account</string>
+    <string name="infoPrompt">Who are you?</string>
+    <string name="firstName">First name</string>
+    <string name="lastName">Last name</string>
+    <string name="verifyPassword">Verify password</string>
+    <string name="displayName">Display name</string>
+    <string name="register">Register</string>
+    <string name="invalidPassword">Password must be at least 8 characters long and contain at least one: uppercase letter, lowercase letter, and digit</string>
+    <string name="invalidVerify">make sure the passwords match</string>
+    <string name="invalidFields">Please make sure all fields are valid, and try again</string>
+    <string name="new_post">New Post</string>
+    <string name="log_out">Log Out</string>
+    <string name="add_post_prompt">Add a New Post</string>
+    <string name="enter_text">Enter Text</string>
+    <string name="post">Post</string>
+    <string name="demo_name">First Last</string>
+    <string name="sample_date">datedatedate</string>
+    <string name="sample_post">postpostpostpost</string>
+    <string name="sample_full_name">First Last</string>
+    <string name="sample_comment">commentcommentcomment</string>
+    <string name="comment_hint">Enter Comment</string>
+</resources>

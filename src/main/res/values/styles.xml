@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="RoundEditText">
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@drawable/login_cred_background</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+    <style name="RoundButton">
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="message">
+        <item name="android:background">@drawable/message_background</item>
+    </style>
+</resources>
