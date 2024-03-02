@@ -24,4 +24,6 @@
     <string name="sample_full_name">First Last</string>
     <string name="sample_comment">commentcommentcomment</string>
     <string name="comment_hint">Enter Comment</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
 </resources>

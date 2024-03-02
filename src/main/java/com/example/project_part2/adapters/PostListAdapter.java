@@ -2,7 +2,6 @@ package com.example.project_part2.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
 import com.example.project_part2.entities.Post;
-import com.example.project_part2.entities.User;
 
 import java.util.List;
 
@@ -68,13 +66,15 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
+
         if (posts != null) {
+            // set Post
             Post current = posts.get(position);
-            String firstName = current.getAuthor().getFirstName();
-            String lastName = current.getAuthor().getLastName();
-            holder.tvAuthor.setText(firstName.concat(" ").concat(lastName));
-            holder.tvContent.setText(current.getText());
+            String displayName = current.getAuthor().getDisplayName();
+            holder.tvAuthor.setText(displayName);
+            holder.tvContent.setText(current.getContent());
             holder.tvTimeStamp.setText(current.getTimeStamp());
+
             // reduce view height if image is missing
             if (current.getImage() == null) {
                 holder.ivPicture.setVisibility(View.GONE);
@@ -82,12 +82,9 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
                 holder.ivPicture.setImageURI(current.getImage());
                 holder.ivPicture.setVisibility(View.VISIBLE);
             }
-            if (current.getAuthor().getProfilePictureUri() != null) {
-//                holder.ivAuthorPicture.setImageURI(current.getAuthor().getProfilePictureUri());
-                holder.ivAuthorPicture.setImageResource(Integer.parseInt(current.getAuthor().getProfilePictureUri().toString()));
-            } else {
-                holder.ivAuthorPicture.setImageResource(R.drawable.default_profile_pic);
-            }
+
+            holder.ivAuthorPicture.setImageURI(current.getAuthor().getPfp());
+
             setLikeColor(current, holder.likeBtn);
             // add on click listener for like button
             holder.likeBtn.setOnClickListener(v -> onLikeClicked(current, holder.likeBtn));
@@ -98,10 +95,8 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
             holder.rvComments.setLayoutManager(layoutManager);
 
             // Create an adapter for the comments
-//            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments(), Integer.parseInt(current.getAuthor().getProfilePictureUri().toString()));
             // use default user icon for comment author instead of custom user icon.
-            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments(), MainActivity.registeredUser.getProfilePictureUri());
-//            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments(), R.drawable.ddog1);
+            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments(), MainActivity.registeredUser.getPfp());
             holder.rvComments.setAdapter(commentAdapter);
 
             // Add a new comment
@@ -136,7 +131,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
         // Set up the buttons
         builder.setPositiveButton("OK", (dialog, which) -> {
             String newText = input.getText().toString();
-            post.setText(newText);
+            post.setContent(newText);
             notifyDataSetChanged();
         });
 
@@ -157,7 +152,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
     }
 
     private void onLikeClicked(Post post, ImageButton btn) {
-        post.toggleLiked();
+        post.like();
         setLikeColor(post, btn);
     }
 

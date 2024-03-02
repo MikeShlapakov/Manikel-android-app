@@ -38,9 +38,6 @@ public class FeedActivity extends AppCompatActivity {
     private EditText newPostEditText;
     private List<Post> postList;
 
-    /**
-     * sets up the recycler view to display the provided posts
-     */
     private void setRecyclerFeed(List<Post> posts) {
         // store the posts list for modification
         this.postList = posts;
@@ -52,22 +49,16 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     private void setUserInfoFeed() {
-        TextView activeUserInfo = findViewById(R.id.activeUserInfo);
+        TextView activeUserInfo = findViewById(R.id.displayName);
 //        String fullName = MainActivity.registeredUser.getFirstName() + " " + MainActivity.registeredUser.getLastName();
-        String fullName = MainActivity.registeredUser.getId();
-        activeUserInfo.setText(fullName);
+        String displayName = MainActivity.registeredUser.getDisplayName();
+        activeUserInfo.setText(displayName);
 
-        ImageView activeUserPic = findViewById(R.id.activeUserPic);
+        ImageView activeUserPic = findViewById(R.id.pfp);
         // use hard-coded image for pfp in top left
-        activeUserPic.setImageURI(MainActivity.registeredUser.getProfilePictureUri());
-//        activeUserPic.setImageResource(R.drawable.ddog1);;
-
-//        try {
-//            activeUserPic.setImageURI((Util.ReadPfpUriFromJson(FeedActivity.this)));
-//        } catch (JSONException | IOException e) {
-//        throw new RuntimeException(e);
-//        }
+        activeUserPic.setImageURI(MainActivity.registeredUser.getPfp());
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,18 +75,6 @@ public class FeedActivity extends AppCompatActivity {
             throw new RuntimeException("IO failed");
         }
 
-//        // set the dark mode button
-//        SwitchMaterial darkModeSwitch = findViewById(R.id.darkModeSwitch);
-//        darkModeSwitch.setChecked(isDarkMode());
-//
-//        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            if (isChecked) {
-//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-//            } else {
-//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//            }
-//        });
-
         SwitchMaterial darkModeSwitch = findViewById(R.id.darkModeSwitch);
 
         darkModeSwitch.setOnCheckedChangeListener(null);
@@ -110,7 +89,6 @@ public class FeedActivity extends AppCompatActivity {
             }
         });
 
-
         // set the recycler with the provided posts
         setRecyclerFeed(posts);
 
@@ -118,10 +96,6 @@ public class FeedActivity extends AppCompatActivity {
         setUserInfoFeed();
     }
 
-    /**
-     * checks if the app is in dark mode
-     * @return true if the app is in dark mode, false otherwise
-     */
     private boolean isDarkMode() {
         switch (AppCompatDelegate.getDefaultNightMode()) {
             case AppCompatDelegate.MODE_NIGHT_YES:
@@ -163,7 +137,9 @@ public class FeedActivity extends AppCompatActivity {
                     } else {
                         Uri imageUri = Uri.parse(imageUriString);
                         Post newPost = new Post(postText, imageUri, MainActivity.registeredUser);
-                         postList.add(newPost);
+                        postList.add(newPost);
+
+
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
@@ -225,6 +201,7 @@ public class FeedActivity extends AppCompatActivity {
             }
         }
     }
+
     public void sharePost(View view) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");

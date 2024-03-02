@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,9 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.project_part2.util.Util;
-
-import org.json.JSONException;
+import com.example.project_part2.entities.User;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,14 +24,18 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
+
     // the request code for picking an image
     public final static int UPLOAD_PIC_REQUEST = 1;
 
-    private TextView invalidTextView;
-    private TextView idEditText;
-    private EditText passwordEditText;
-    private EditText verifyEditText;
-    private EditText userNameEditText;
+    private TextView invalidInputTV;
+    private TextView usernameET;
+    private EditText passwordET;
+    private EditText verifyPasswordET;
+    private EditText firstNameET;
+    private EditText lastNameET;
+
+    private Uri pic_taken = null;
 
 
     @Override
@@ -43,15 +44,19 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         // identify the invalidInput TextView to display errors in it later
-        invalidTextView = findViewById(R.id.invalidInput);
+        invalidInputTV = findViewById(R.id.invalidInput);
 
         // attach the specific listener for each EditText
-        passwordEditText = findViewById(R.id.passwordRegister);
-        passwordEditText.addTextChangedListener(passwordWatcher);
-        verifyEditText = findViewById(R.id.verifyPasswordRegister);
-        verifyEditText.addTextChangedListener(verifyWatcher);
-        idEditText = findViewById(R.id.displayNameRegister);
-        userNameEditText = findViewById(R.id.userNameRegister);
+        passwordET = findViewById(R.id.passwordInput);
+        passwordET.addTextChangedListener(passwordWatcher);
+
+        verifyPasswordET = findViewById(R.id.verifyPasswordInput);
+        verifyPasswordET.addTextChangedListener(verifyWatcher);
+
+        usernameET = findViewById(R.id.usernameInput);
+
+        firstNameET = findViewById(R.id.firstNameInput);
+        lastNameET = findViewById(R.id.lastNameInput);
     }
 
 
@@ -99,10 +104,10 @@ public class RegisterActivity extends AppCompatActivity {
         boolean validPassword = containsUppercase && containsLowercase && containsDigit && has8Chars;
 
         if (validPassword) {
-            invalidTextView.setVisibility(View.GONE);
+            invalidInputTV.setVisibility(View.GONE);
         } else {
-            invalidTextView.setVisibility(View.VISIBLE);
-            invalidTextView.setText(R.string.invalidPassword);
+            invalidInputTV.setVisibility(View.VISIBLE);
+            invalidInputTV.setText(R.string.invalidPassword);
         }
 
         return validPassword;
@@ -110,37 +115,43 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     private boolean validateVerify(String verify) {
-        String password = passwordEditText.getText().toString();
+        String password = passwordET.getText().toString();
 
         boolean validVerify = verify.equals(password);
 
         if (validVerify) {
-            invalidTextView.setVisibility(View.GONE);
+            invalidInputTV.setVisibility(View.GONE);
         } else {
-            invalidTextView.setVisibility(View.VISIBLE);
-            invalidTextView.setText(R.string.invalidVerify);
+            invalidInputTV.setVisibility(View.VISIBLE);
+            invalidInputTV.setText(R.string.invalidVerify);
         }
 
         return validVerify;
     }
 
     public void register(View view) {
-        String verify = verifyEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-        boolean validVerify = validateVerify(verify);
+
+        String password = passwordET.getText().toString();
+        String secondPassword = verifyPasswordET.getText().toString();
+
+        boolean validVerify = validateVerify(secondPassword);
         boolean validPassword = validatePassword(password);
 
+        // if all is good, register and goto feed
         if (validPassword && validVerify) {
 
-            MainActivity.registeredUser.setId(idEditText.getText().toString());
-            MainActivity.registeredUser.setLogin_username(userNameEditText.getText().toString());
-            MainActivity.registeredUser.setUser_pass(passwordEditText.getText().toString());
+            MainActivity.registeredUser = new User(firstNameET.getText().toString(),
+                                                   lastNameET.getText().toString(),
+                                                   usernameET.getText().toString(),
+                                                   passwordET.getText().toString(),
+                                                   pic_taken);
 
             Intent intent = new Intent(this, FeedActivity.class);
             startActivity(intent);
+
         } else {
-            invalidTextView.setVisibility(View.VISIBLE);
-            invalidTextView.setText(R.string.invalidFields);
+            invalidInputTV.setVisibility(View.VISIBLE);
+            invalidInputTV.setText(R.string.invalidFields);
         }
     }
 
@@ -166,9 +177,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // TODO: add saving image functionality
 
-        Uri pic_taken = null;
         // check if the result is the result to the image pick request, and that the result is ok
         if (requestCode == UPLOAD_PIC_REQUEST && resultCode == RESULT_OK) {
             // identify camera upload because data will be null
@@ -186,7 +195,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
 
                     pic_taken = Uri.parse(imageFile.getAbsolutePath());
-                    ImageView profilePicView = findViewById(R.id.profilePicRegister);
+                    ImageView profilePicView = findViewById(R.id.pfpInput);
                     profilePicView.setImageURI(null); // clear image view cache
 
                 } catch (IOException e){
@@ -200,21 +209,10 @@ public class RegisterActivity extends AppCompatActivity {
 
 
             // update the imageView to display the selected image
-            ImageView profilePicView = findViewById(R.id.profilePicRegister);
+            ImageView profilePicView = findViewById(R.id.pfpInput);
             profilePicView.setImageURI(pic_taken);
             profilePicView.setColorFilter(Color.TRANSPARENT);
 
-            if (pic_taken != null) {
-                MainActivity.registeredUser.setProfilePicture(pic_taken);
-            }
-
-//            try {
-//                if (pic_taken != null) {
-//                    Util.WritePfpToJson(RegisterActivity.this, pic_taken);
-//                }
-//            } catch (JSONException | IOException e) {
-//                throw new RuntimeException(e);
-//            }
         }
     }
 }

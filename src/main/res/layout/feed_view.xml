@@ -23,14 +23,14 @@
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
-                android:id="@+id/activeUserPic"
+                android:id="@+id/pfp"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ddog1" />
 
             <TextView
-                android:id="@+id/activeUserInfo"
+                android:id="@+id/displayName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"

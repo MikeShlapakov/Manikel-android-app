@@ -2,7 +2,6 @@ package com.example.project_part2;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -13,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.project_part2.entities.User;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static String PACKAGE_NAME = "com.example.project_part2";
     public static User registeredUser = new User();
 
     @Override
@@ -22,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
         // set the logo color to purple
         ImageView logo = findViewById(R.id.loginIcon);
         logo.setColorFilter(R.color.AppPrimary);
+
+//        PACKAGE_NAME = getApplicationContext().getPackageName();
+
     }
 
     public void goRegister(View view) {
@@ -33,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         EditText id = findViewById(R.id.usernameLogin);
         EditText pass = findViewById(R.id.passwordLogin);
 //        if (id.getText().toString().equals(registeredUser.getId()) && pass.getText().toString().equals(registeredUser.getPass())) {
-        if (id.getText().toString().equals(registeredUser.getLogin_username()) && pass.getText().toString().equals(registeredUser.getPass())) {
+        if (id.getText().toString().equals(registeredUser.getUsername()) && pass.getText().toString().equals(registeredUser.getPass())) {
             Intent intent = new Intent(this, FeedActivity.class);
             startActivity(intent);
         } else {

@@ -21,6 +21,7 @@ import java.util.Scanner;
 
 public class Util {
     private static JSONObject parseJsonFromResRaw(Resources res, int rawId) throws IOException, JSONException {
+
         InputStream inputStream = res.openRawResource(rawId);
         Scanner scanner = new Scanner(inputStream, "UTF-8").useDelimiter("\\A");
         String jsonString = scanner.next();
@@ -33,9 +34,12 @@ public class Util {
     }
 
     public static List<Post> samplePostList(Context context) throws JSONException, IOException {
+
         List<Post> postList = new ArrayList<>();
         Resources res = context.getResources();
         List<Integer> jsonIds = new ArrayList<>();
+
+        // add default posts to list
         jsonIds.add(R.raw.post1);
         jsonIds.add(R.raw.post2);
         jsonIds.add(R.raw.post3);
@@ -50,61 +54,11 @@ public class Util {
         for (int id : jsonIds) {
             JSONObject jsonObject = parseJsonFromResRaw(res, id);
 
-            JSONObject author = jsonObject.getJSONObject("author");
-            author.put("pfp", R.drawable.ddog2);
-
             Post post = new Post(jsonObject);
             postList.add(post);
         }
 
         return postList;
-    }
-
-    public static void WriteJsonToFile(Context context, String filename, JSONObject jsonObject) {
-        try {
-            FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
-            outputStreamWriter.write(jsonObject.toString());
-            outputStreamWriter.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void WriteUserToJson (Context context, User user) throws JSONException, IOException {
-        Resources res = context.getResources();
-        int id = R.raw.user;
-        JSONObject user_obj = parseJsonFromResRaw(res, id);
-        user_obj.put("id", user.getId());
-        user_obj.put("first_name", user.getFirstName());
-        user_obj.put("last_name", user.getLastName());
-        user_obj.put("user_pass", user.getPass());
-        user_obj.put("pfp", user.getProfilePictureUri().toString());
-    }
-
-    public static void WritePfpToJson (Context context, Uri img) throws JSONException, IOException {
-        Resources res = context.getResources();
-        int id = R.raw.user;
-        JSONObject user_obj = parseJsonFromResRaw(res, id);
-        user_obj.put("pfp", img.toString());
-
-        WriteJsonToFile(context, "user_modified.json", user_obj);
-    }
-
-    public static User ReadUserFromJson (Context context) throws JSONException, IOException {
-        Resources res = context.getResources();
-        int id = R.raw.user;
-        JSONObject user_obj = parseJsonFromResRaw(res, id);
-
-        return new User(user_obj);
-    }
-
-    public static Uri ReadPfpUriFromJson (Context context) throws JSONException, IOException {
-        Resources res = context.getResources();
-        int id = R.raw.user;
-        JSONObject user_obj = parseJsonFromResRaw(res, id);
-
-        return Uri.parse(user_obj.getString("pfp"));
     }
 }
 
