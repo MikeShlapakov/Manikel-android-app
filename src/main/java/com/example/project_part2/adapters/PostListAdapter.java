@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
+import com.example.project_part2.entities.Comment;
 import com.example.project_part2.entities.Post;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
         private final ImageView ivPicture;
         private final ImageView ivAuthorPicture;
         private final ImageButton likeBtn;
+        public final TextView tvlikeCount;
         private final RelativeLayout postLayout;
         private final RecyclerView rvComments;
         private final EditText etNewComment;
@@ -44,6 +46,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
             ivPicture = itemView.findViewById(R.id.ivPicture);
             ivAuthorPicture = itemView.findViewById(R.id.ivAuthorPicture);
             likeBtn = itemView.findViewById(R.id.likeButton);
+            tvlikeCount = itemView.findViewById(R.id.like_count);
             postLayout = itemView.findViewById(R.id.postLayout);
             rvComments = itemView.findViewById(R.id.rvComments);
             etNewComment = itemView.findViewById(R.id.etNewComment);
@@ -74,6 +77,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
             holder.tvAuthor.setText(displayName);
             holder.tvContent.setText(current.getContent());
             holder.tvTimeStamp.setText(current.getTimeStamp());
+//            holder.tvlikeCount.setText(current.getLikeCount());
 
             // reduce view height if image is missing
             if (current.getImage() == null) {
@@ -87,7 +91,8 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 
             setLikeColor(current, holder.likeBtn);
             // add on click listener for like button
-            holder.likeBtn.setOnClickListener(v -> onLikeClicked(current, holder.likeBtn));
+            holder.tvlikeCount.setText(Integer.toString(current.getLikeCount()));
+            holder.likeBtn.setOnClickListener(v -> onLikeClicked(current, holder.likeBtn, holder.tvlikeCount));
             holder.tvTimeStamp.setTag(current.getUrl()); // holds the post URL as String
 
             // Set up the comments RecyclerView
@@ -96,13 +101,13 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 
             // Create an adapter for the comments
             // use default user icon for comment author instead of custom user icon.
-            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments(), MainActivity.registeredUser.getPfp());
+            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments());
             holder.rvComments.setAdapter(commentAdapter);
 
             // Add a new comment
             holder.btnAddComment.setOnClickListener(v -> {
-                String newComment = holder.etNewComment.getText().toString();
-                if (!newComment.isEmpty()) {
+                Comment newComment = new Comment(MainActivity.registeredUser.getPfp(), holder.etNewComment.getText().toString());
+                if (!newComment.getContent().isEmpty()) {
                     current.addComment(newComment);
                     commentAdapter.notifyDataSetChanged();
                     holder.etNewComment.getText().clear();
@@ -151,9 +156,10 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
         }
     }
 
-    private void onLikeClicked(Post post, ImageButton btn) {
+    private void onLikeClicked(Post post, ImageButton btn, TextView count) {
         post.like();
         setLikeColor(post, btn);
+        count.setText(Integer.toString(post.getLikeCount()));
     }
 
     @Override

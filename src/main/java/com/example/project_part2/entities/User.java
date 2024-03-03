@@ -16,25 +16,18 @@ public class User {
     private final String firstName;
     private final String lastName;
 
-    // name used in login
-    private String username;
-    private String password;
-
     // pfp
     private Uri pfp;
 
 
-
     public User() {
-        this("foo", "bar", "foobar", "foobar", null);
+        this("foo", "bar", null);
     }
 
 
-    public User(String firstName, String lastName, String username, String password, Uri pfp) {
+    public User(String firstName, String lastName, Uri pfp) {
         this.firstName = firstName;
         this.lastName= lastName;
-        this.username = username;
-        this.password = password;
 
         if (pfp == null) {
             setDefaultPfp();
@@ -66,11 +59,4 @@ public class User {
         return pfp;
     }
 
-    public String getUsername() {
-        return this.username;
-    }
-
-    public String getPass() {
-        return this.password;
-    }
 }

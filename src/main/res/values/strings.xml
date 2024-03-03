@@ -26,4 +26,6 @@
     <string name="comment_hint">Enter Comment</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
+    <string name="_0">0</string>
+    <string name="BaseUrl">http://10.0.2.2:7249/api/</string>
 </resources>

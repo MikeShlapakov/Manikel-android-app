@@ -18,12 +18,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_part2.adapters.PostListAdapter;
+import com.example.project_part2.apis.PostAPI;
 import com.example.project_part2.entities.Post;
-import com.example.project_part2.util.Util;
+//import com.example.project_part2.util.Util;
+import com.example.project_part2.entities.PostDao;
+import com.example.project_part2.viewmodels.PostsViewModel;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import org.json.JSONException;
@@ -34,19 +38,54 @@ import java.io.IOException;
 import java.util.List;
 
 public class FeedActivity extends AppCompatActivity {
+
+    // what are these?
     private ImageView newPostImageView;
     private EditText newPostEditText;
-    private List<Post> postList;
 
-    private void setRecyclerFeed(List<Post> posts) {
-        // store the posts list for modification
-        this.postList = posts;
+    private PostsViewModel viewModel;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.feed_view);
+
+        // get the sample posts from the .json
+        List<Post> posts;
+
+        viewModel = new ViewModelProvider(this).get(PostsViewModel.class);
+
+//        // TODO: get posts to show
+        // repo should act upon api
+//        PostAPI postAPI = new PostAPI();
+//        postAPI.get();
+
+        setDarkMode();
+
+
         RecyclerView postList = findViewById(R.id.postList);
         PostListAdapter postListAdapter = new PostListAdapter(this);
         postList.setAdapter(postListAdapter);
         postList.setLayoutManager(new LinearLayoutManager(this));
-        postListAdapter.setPosts(this.postList);
+
+        // set any given posts if there is an update in the eyes of an observer
+        viewModel.getPosts().observe(this, postListAdapter::setPosts);
+
+        // set the user info display
+        setUserInfoFeed();
     }
+
+
+//    private void setRecyclerFeed() {
+//        // store the posts list for modification
+////        this.postList = posts;
+//        RecyclerView postList = findViewById(R.id.postList);
+//        PostListAdapter postListAdapter = new PostListAdapter(this);
+//        postList.setAdapter(postListAdapter);
+//        postList.setLayoutManager(new LinearLayoutManager(this));
+////        postListAdapter.setPosts(this.postList);
+//    }
+
 
     private void setUserInfoFeed() {
         TextView activeUserInfo = findViewById(R.id.displayName);
@@ -59,22 +98,8 @@ public class FeedActivity extends AppCompatActivity {
         activeUserPic.setImageURI(MainActivity.registeredUser.getPfp());
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.feed_view);
 
-        // get the sample posts from the .json
-        List<Post> posts;
-        try {
-            Context context = FeedActivity.this.getApplicationContext();
-            posts = Util.samplePostList(context);
-        } catch (JSONException e) {
-            throw new RuntimeException("json parse failed");
-        } catch (IOException e) {
-            throw new RuntimeException("IO failed");
-        }
-
+    public void setDarkMode() {
         SwitchMaterial darkModeSwitch = findViewById(R.id.darkModeSwitch);
 
         darkModeSwitch.setOnCheckedChangeListener(null);
@@ -88,12 +113,6 @@ public class FeedActivity extends AppCompatActivity {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         });
-
-        // set the recycler with the provided posts
-        setRecyclerFeed(posts);
-
-        // set the user info display
-        setUserInfoFeed();
     }
 
     private boolean isDarkMode() {
@@ -137,9 +156,8 @@ public class FeedActivity extends AppCompatActivity {
                     } else {
                         Uri imageUri = Uri.parse(imageUriString);
                         Post newPost = new Post(postText, imageUri, MainActivity.registeredUser);
-                        postList.add(newPost);
-
-
+                        // TODO: how to add post?
+//                      postList.add(newPost);
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());

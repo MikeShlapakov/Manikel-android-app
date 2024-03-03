@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.project_part2.entities.Credentials;
 import com.example.project_part2.entities.User;
 
 import java.io.File;
@@ -142,9 +143,10 @@ public class RegisterActivity extends AppCompatActivity {
 
             MainActivity.registeredUser = new User(firstNameET.getText().toString(),
                                                    lastNameET.getText().toString(),
-                                                   usernameET.getText().toString(),
-                                                   passwordET.getText().toString(),
                                                    pic_taken);
+
+            MainActivity.registeredCredentials = new Credentials(usernameET.getText().toString(),
+                                                                 passwordET.getText().toString());
 
             Intent intent = new Intent(this, FeedActivity.class);
             startActivity(intent);

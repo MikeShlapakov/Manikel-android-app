@@ -1,8 +1,10 @@
 package com.example.project_part2.entities;
 
 import android.net.Uri;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
-import com.example.project_part2.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,19 +12,23 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
-
-public class Post{
+@Entity
+public class Post {
+    @PrimaryKey(autoGenerate = true)
+    // id used in db to differentiate between posts
+    private int id;
     private String content; // the post text content
     private Uri image; // the post image (when applicable)
     private final User author; // the post's author
-
-
     String url; // temp default URL for all posts
     private final String timeStamp; // the post's creation Date
     private int likes;
+    @Ignore
     private boolean liked;
-    private final List<String> comments;
+    private final List<Comment> comments;
 
 
     public Post() {
@@ -45,25 +51,29 @@ public class Post{
     }
 
     // from json to object
-    public Post(JSONObject postJson) throws JSONException {
-
-        // extract the nested author object
-        JSONObject authorJson = postJson.getJSONObject("author");
-
-        // construct the user using User JSON constructor
-        this.author = new User(authorJson);
-        this.content = postJson.getString("text");
-        this.timeStamp = new Date().toString();
-
-        // check if post has image
-        if (postJson.getString("image").equals("")) {
-            this.image = null;
-        } else {
-            this.image = Uri.parse(postJson.getString("image"));
-        }
-
-        this.comments = new ArrayList<>();
-    }
+//    public Post(JSONObject postJson) throws JSONException {
+//
+//        // extract the nested author object
+//        JSONObject authorJson = postJson.getJSONObject("author");
+//
+//        // construct the user using User JSON constructor
+//        this.author = new User(authorJson);
+//        this.content = postJson.getString("text");
+//        this.timeStamp = new Date().toString();
+//
+//        // check if post has image
+//        if (postJson.getString("image").equals("")) {
+//            this.image = null;
+//        } else {
+//            this.image = Uri.parse(postJson.getString("image"));
+//        }
+//
+//        if (!postJson.getString("likes").equals("")) {
+//            this.likes = Integer.parseInt(postJson.getString("likes"));
+//        }
+//
+//        this.comments = new ArrayList<>();
+//    }
 
     public String getContent() {
         return this.content;
@@ -96,6 +106,10 @@ public class Post{
         return this.liked;
     }
 
+    public int getLikeCount() {
+        return this.likes;
+    }
+
     public void setContent(String content) {
         this.content = content;
     }
@@ -108,11 +122,15 @@ public class Post{
         return this.url;
     }
 
-    public List<String> getComments() {
+    public List<Comment> getComments() {
         return this.comments;
     }
 
-    public void addComment(String comment) {
+    public void addComment(Comment comment) {
         this.comments.add(comment);
+    }
+
+    public int getId() {
+        return id;
     }
 }
