@@ -34,6 +34,7 @@ public class PostAPI {
     }
 
     public void get(MutableLiveData<List<Post>> posts) {
+
         Call<List<Post>> call = webServiceAPI.getPosts();
         call.enqueue(new Callback<List<Post>>() {
 
@@ -50,9 +51,10 @@ public class PostAPI {
 //                }).start()
             }
 
+
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-
+                System.out.println("nooni");
             }
         });
     }

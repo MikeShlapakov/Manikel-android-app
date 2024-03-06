@@ -6,28 +6,24 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Entity
 public class Post {
     @PrimaryKey(autoGenerate = true)
+
     // id used in db to differentiate between posts
     private int id;
     private String content; // the post text content
-    private Uri image; // the post image (when applicable)
+    private String image; // the post image (when applicable)
     private final User author; // the post's author
-    String url; // temp default URL for all posts
-    private final String timeStamp; // the post's creation Date
+    private final String timestamp; // the post's creation Date
     private int likes;
     @Ignore
-    private boolean liked;
+    private transient boolean liked;
+
     private final List<Comment> comments;
 
 
@@ -39,41 +35,19 @@ public class Post {
     public Post(String content, Uri image, User author) {
 
         this.content = content;
-        this.image = image;
+        if (image != null) {
+            this.image = image.toString();
+        } else {
+            this.image = null;
+        }
         this.author = author;
 
-        this.timeStamp = new Date().toString();
+        this.timestamp = new Date().toString();
 
         // default stuff
         this.likes = 0;
         this.comments = new ArrayList<>();
-        this.url = "www.google.com";
     }
-
-    // from json to object
-//    public Post(JSONObject postJson) throws JSONException {
-//
-//        // extract the nested author object
-//        JSONObject authorJson = postJson.getJSONObject("author");
-//
-//        // construct the user using User JSON constructor
-//        this.author = new User(authorJson);
-//        this.content = postJson.getString("text");
-//        this.timeStamp = new Date().toString();
-//
-//        // check if post has image
-//        if (postJson.getString("image").equals("")) {
-//            this.image = null;
-//        } else {
-//            this.image = Uri.parse(postJson.getString("image"));
-//        }
-//
-//        if (!postJson.getString("likes").equals("")) {
-//            this.likes = Integer.parseInt(postJson.getString("likes"));
-//        }
-//
-//        this.comments = new ArrayList<>();
-//    }
 
     public String getContent() {
         return this.content;
@@ -91,8 +65,8 @@ public class Post {
         return this.author;
     }
 
-    public String getTimeStamp() {
-        return this.timeStamp;
+    public String getTimestamp() {
+        return this.timestamp;
     }
 
     public void like() {
@@ -115,11 +89,7 @@ public class Post {
     }
 
     public void setImage(Uri imageUri) {
-        this.image = imageUri;
-    }
-
-    public String getUrl() {
-        return this.url;
+        this.image = imageUri.toString();
     }
 
     public List<Comment> getComments() {

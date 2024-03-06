@@ -1,6 +1,7 @@
 package com.example.project_part2;
 
 import static com.example.project_part2.RegisterActivity.UPLOAD_PIC_REQUEST;
+import static com.example.project_part2.util.MyApplication.context;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,21 +13,29 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.project_part2.adapters.IncomingFriendsAdapter;
 import com.example.project_part2.adapters.PostListAdapter;
 import com.example.project_part2.apis.PostAPI;
 import com.example.project_part2.entities.Post;
 //import com.example.project_part2.util.Util;
 import com.example.project_part2.entities.PostDao;
+import com.example.project_part2.entities.User;
 import com.example.project_part2.viewmodels.PostsViewModel;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -35,14 +44,15 @@ import org.json.JSONException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FeedActivity extends AppCompatActivity {
 
-    // what are these?
     private ImageView newPostImageView;
     private EditText newPostEditText;
-
     private PostsViewModel viewModel;
 
     @Override
@@ -50,51 +60,57 @@ public class FeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_view);
 
-        // get the sample posts from the .json
-        List<Post> posts;
-
+        // holds sample posts from the .json at first
+        // this also asks for posts from server
         viewModel = new ViewModelProvider(this).get(PostsViewModel.class);
 
-//        // TODO: get posts to show
-        // repo should act upon api
-//        PostAPI postAPI = new PostAPI();
-//        postAPI.get();
+//        List<String> list = Arrays.asList("Settings", "hello");
+//        Spinner spinner = findViewById()
+        ImageButton settingsButton = findViewById(R.id.settings);
+
+        settingsButton.setOnClickListener(item -> {
+
+            PopupWindow popupWindow = new PopupWindow(context);
+            ListView listView = new ListView(context);
+            List<User> incoming = Collections.singletonList(new User());
+            IncomingFriendsAdapter adapter = new IncomingFriendsAdapter(context, incoming);
+            listView.setAdapter(adapter);
+
+            popupWindow.setContentView(listView);
+            popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+            popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+            popupWindow.setFocusable(true); // To close it on outside touch
+            popupWindow.showAsDropDown(settingsButton);
+
+        });
+
 
         setDarkMode();
 
-
         RecyclerView postList = findViewById(R.id.postList);
-        PostListAdapter postListAdapter = new PostListAdapter(this);
-        postList.setAdapter(postListAdapter);
+        PostListAdapter adapter = new PostListAdapter(this);
+        postList.setAdapter(adapter);
         postList.setLayoutManager(new LinearLayoutManager(this));
 
-        // set any given posts if there is an update in the eyes of an observer
-        viewModel.getPosts().observe(this, postListAdapter::setPosts);
+        adapter.setPosts(viewModel.getPosts().getValue());
+
+        // if we change the viewModel posts this should be called
+        viewModel.getPosts().observe(this, posts -> {
+                adapter.setPosts(posts);
+                adapter.notifyDataSetChanged();
+        });
 
         // set the user info display
         setUserInfoFeed();
     }
 
 
-//    private void setRecyclerFeed() {
-//        // store the posts list for modification
-////        this.postList = posts;
-//        RecyclerView postList = findViewById(R.id.postList);
-//        PostListAdapter postListAdapter = new PostListAdapter(this);
-//        postList.setAdapter(postListAdapter);
-//        postList.setLayoutManager(new LinearLayoutManager(this));
-////        postListAdapter.setPosts(this.postList);
-//    }
-
-
     private void setUserInfoFeed() {
         TextView activeUserInfo = findViewById(R.id.displayName);
-//        String fullName = MainActivity.registeredUser.getFirstName() + " " + MainActivity.registeredUser.getLastName();
         String displayName = MainActivity.registeredUser.getDisplayName();
         activeUserInfo.setText(displayName);
 
         ImageView activeUserPic = findViewById(R.id.pfp);
-        // use hard-coded image for pfp in top left
         activeUserPic.setImageURI(MainActivity.registeredUser.getPfp());
     }
 
@@ -133,6 +149,13 @@ public class FeedActivity extends AppCompatActivity {
 
     public void addPost(View view) {
         showAddDialog();
+    }
+
+    public void checkInfo(View view) {
+        // make a dropdown menu with
+        // - add friend (message at the bottom saying friend request sent)
+        //      afterwards button disabled if already sent
+        // - show posts
     }
 
     public void showAddDialog() {

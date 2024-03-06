@@ -16,12 +16,20 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="UseCompoundDrawables">
 
-        <ImageView
-            android:id="@+id/ivAuthorPicture"
+        <ImageButton
+            android:id="@+id/ivPfp"
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:importantForAccessibility="no"
-            android:src="@drawable/ddog1" />
+            android:src="@drawable/ddog1"
+            android:padding="0dp"
+            android:scaleType="fitCenter"/>
+<!--        <ImageView-->
+<!--            android:id="@+id/ivAuthorPicture"-->
+<!--            android:layout_width="55dp"-->
+<!--            android:layout_height="55dp"-->
+<!--            android:importantForAccessibility="no"-->
+<!--            android:src="@drawable/ddog1" />-->
 
         <LinearLayout
             android:layout_width="0dp"
@@ -58,7 +66,7 @@
         android:text="@string/sample_post" />
 
     <ImageView
-        android:id="@+id/ivPicture"
+        android:id="@+id/ivContentImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:importantForAccessibility="no"
@@ -71,7 +79,7 @@
         android:id="@+id/bot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ivPicture"
+        android:layout_below="@id/ivContentImage"
         android:orientation="vertical">
 
 <!--        start here-->
@@ -83,14 +91,14 @@
             android:paddingTop="20dp">
 
             <ImageView
-                android:id="@+id/like_pic"
+                android:id="@+id/ivlikePic"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_gravity="center"
                 android:src="@drawable/like_count"/>
 
             <TextView
-                android:id="@+id/like_count"
+                android:id="@+id/tvlikeCount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

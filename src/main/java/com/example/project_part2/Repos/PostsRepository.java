@@ -18,9 +18,9 @@ import java.util.List;
 
 public class PostsRepository {
 
-    private static MutableLiveData<List<Post>> posts;
+//    private static MutableLiveData<List<Post>> posts;
     private PostDao postDao;
-    private PostListData postListData;
+    private static PostListData postListData;
     private PostAPI api;
 
 
@@ -41,7 +41,7 @@ public class PostsRepository {
     }
 
     public static MutableLiveData<List<Post>> getPosts() {
-        return posts;
+        return postListData;
     }
 
 
@@ -62,13 +62,15 @@ public class PostsRepository {
 
                 // "this" will have the value of posts
                 postValue(posts);
+//                setValue(posts);
 
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
+                System.out.println("done sleepin");
                 PostAPI postAPI = new PostAPI();
                 postAPI.get(this);
 
@@ -85,7 +87,7 @@ public class PostsRepository {
         }
 
         public LiveData<List<Post>> getAll() {
-            return posts;
+            return postListData;
         }
 
 //        public void add (final Post post) {

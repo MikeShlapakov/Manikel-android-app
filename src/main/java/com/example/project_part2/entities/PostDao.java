@@ -37,7 +37,6 @@ public interface PostDao {
     // will need to update version maybe
     @Database(entities = {Post.class}, version = 1)
     abstract class PostDB extends RoomDatabase {
-
 //        private static PostDB instance;
         public abstract PostDao postDao();
 

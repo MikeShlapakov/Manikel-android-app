@@ -4,7 +4,9 @@ import android.net.Uri;
 
 public class Comment {
 
-    private Uri pfp;
+    // pfp is a Uri saved as string, no one
+    // outside needs to know its saved as a string
+    private String pfp;
     private String content;
 
     // TODO: add support for date and likes
@@ -13,21 +15,21 @@ public class Comment {
 
 
     public Comment(User u, String c, String d, int l) {
-        this.pfp = u.getPfp();
+        this.pfp = u.getPfp().toString();
         this.content = c;
         this.date = d;
         this.likes = l;
     }
 
     public Comment(Uri p, String c, String d, int l) {
-        this.pfp = p;
+        this.pfp = p.toString();
         this.content = c;
         this.date = d;
         this.likes = l;
     }
 
     public Comment(Uri p, String c) {
-        this.pfp = p;
+        this.pfp = p.toString();
         this.content = c;
         this.date = "null";
         this.likes = 0;
