@@ -2,6 +2,7 @@ package com.example.project_part2;
 
 import static com.example.project_part2.RegisterActivity.UPLOAD_PIC_REQUEST;
 import static com.example.project_part2.util.MyApplication.context;
+import static com.example.project_part2.util.MyApplication.token;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,10 +34,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.project_part2.adapters.IncomingFriendsAdapter;
 import com.example.project_part2.adapters.PostListAdapter;
 import com.example.project_part2.apis.PostAPI;
+import com.example.project_part2.apis.TokenAPI;
 import com.example.project_part2.entities.Post;
 //import com.example.project_part2.util.Util;
-import com.example.project_part2.entities.PostDao;
 import com.example.project_part2.entities.User;
+import com.example.project_part2.util.MyApplication;
 import com.example.project_part2.viewmodels.PostsViewModel;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -55,17 +58,20 @@ public class FeedActivity extends AppCompatActivity {
     private EditText newPostEditText;
     private PostsViewModel viewModel;
 
+    private PostAPI postAPI;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_view);
 
         // holds sample posts from the .json at first
-        // this also asks for posts from server
+        // this also asks for posts from serve
+
+
         viewModel = new ViewModelProvider(this).get(PostsViewModel.class);
 
-//        List<String> list = Arrays.asList("Settings", "hello");
-//        Spinner spinner = findViewById()
         ImageButton settingsButton = findViewById(R.id.settings);
 
         settingsButton.setOnClickListener(item -> {
@@ -170,15 +176,21 @@ public class FeedActivity extends AppCompatActivity {
                 .setTitle("Add Post")
                 .setPositiveButton("Add", (dialog, which) -> {
                     Context context = ((AlertDialog) dialog).getContext();
-                    String postText = newPostEditText.getText().toString().trim();
+                    String content = newPostEditText.getText().toString().trim();
+                    // TODO: b64
                     String imageUriString = newPostImageView.getTag().toString().trim();
                     // don't allow empty posts
-                    if (postText.isEmpty()) {
+                    if (content.isEmpty()) {
                         // Show an error message with Toast
                         Toast.makeText(context, "Post cannot be empty!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Uri imageUri = Uri.parse(imageUriString);
-                        Post newPost = new Post(postText, imageUri, MainActivity.registeredUser);
+//                        Uri imageUri = Uri.parse(imageUriString);
+
+                        Post newPost = new Post(content, imageUriString, MainActivity.registeredUser.id());
+
+                        // TODO
+                        postAPI.createPost(newPost);
+
                         // TODO: how to add post?
 //                      postList.add(newPost);
                     }

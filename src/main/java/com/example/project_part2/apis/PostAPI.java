@@ -2,8 +2,10 @@ package com.example.project_part2.apis;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
 import com.example.project_part2.entities.Post;
+import com.example.project_part2.entities.User;
 import com.example.project_part2.util.MyApplication;
 
 import java.util.List;
@@ -20,7 +22,6 @@ public class PostAPI {
     Retrofit retrofit;
     WebServiceAPI webServiceAPI;
 
-
     public PostAPI() {
 //        this.postListData = postListData;
 //        this.dao = dao;
@@ -33,9 +34,9 @@ public class PostAPI {
         webServiceAPI = retrofit.create(WebServiceAPI.class);
     }
 
-    public void get(MutableLiveData<List<Post>> posts) {
+    public void getPosts(MutableLiveData<List<Post>> posts) {
 
-        Call<List<Post>> call = webServiceAPI.getPosts();
+        Call<List<Post>> call = webServiceAPI.getAllPosts(MyApplication.token);
         call.enqueue(new Callback<List<Post>>() {
 
             @Override
@@ -58,5 +59,106 @@ public class PostAPI {
             }
         });
     }
+
+    public void createPost(Post post) {
+        Call<Void> call = webServiceAPI.createPost(MainActivity.registeredUser.id(), "Bearer " + MyApplication.token, post);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    // hello
+                } else {
+                    // Handle error
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Handle failure
+            }
+        });
+    }
+
+//    public void editPost(String userId, String postId, Post updatedPost) {
+//        Call<Void> call = webServiceAPI.editPosts(userId, postId, "Bearer " + MyApplication.token, updatedPost);
+//        call.enqueue(new Callback<Void>() {
+//            @Override
+//            public void onResponse(Call<Void> call, Response<Void> response) {
+//                // Handle response
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Void> call, Throwable t) {
+//                // Handle failure
+//            }
+//        });
+//    }
+
+    public void deletePost(String userId, String postId) {
+        Call<Void> call = webServiceAPI.deletePost(userId, postId, "Bearer " + MyApplication.token);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                // Handle successful deletion
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                // Handle failure
+            }
+        });
+    }
+
+
+//    public void getComments(String postId, MutableLiveData<List<Comment>> commentsLiveData) {
+//        Call<List<Comment>> call = webServiceAPI.getComments(postId, "Bearer " + YOUR_TOKEN);
+//        call.enqueue(new Callback<List<Comment>>() {
+//            @Override
+//            public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
+//                if (response.isSuccessful()) {
+//                    commentsLiveData.postValue(response.body());
+//                } else {
+//                    // Handle error response
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Comment>> call, Throwable t) {
+//                // Handle failure
+//            }
+//        });
+//    }
+//
+//    public void createComment(String postId, Post comment) {
+//        Call<Post> call = webServiceAPI.createComment(postId, "Bearer " + YOUR_TOKEN, comment);
+//        call.enqueue(new Callback<Post>() {
+//            @Override
+//            public void onResponse(Call<Post> call, Response<Post> response) {
+//                // Handle successful creation
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Post> call, Throwable t) {
+//                // Handle failure
+//            }
+//        });
+//    }
+//
+//    public void deleteComment(String userId, String commentId) {
+//        Call<Void> call = webServiceAPI.deleteComment(userId, commentId, "Bearer " + YOUR_TOKEN);
+//        call.enqueue(new Callback<Void>() {
+//            @Override
+//            public void onResponse(Call<Void> call, Response<Void> response) {
+//                // Handle successful deletion
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Void> call, Throwable t) {
+//                // Handle failure
+//            }
+//        });
+//    }
+
+
 
 }

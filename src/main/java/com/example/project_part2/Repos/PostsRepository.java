@@ -72,7 +72,7 @@ public class PostsRepository {
 
                 System.out.println("done sleepin");
                 PostAPI postAPI = new PostAPI();
-                postAPI.get(this);
+                postAPI.getPosts(this);
 
             }).start();
         }

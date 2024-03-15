@@ -8,15 +8,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
-import com.example.project_part2.entities.Credentials;
+import com.example.project_part2.apis.TokenAPI;
+import com.example.project_part2.apis.UserAPI;
 import com.example.project_part2.entities.User;
+import com.example.project_part2.util.MyApplication;
 
 public class MainActivity extends AppCompatActivity {
 
     public static String PACKAGE_NAME = "com.example.project_part2";
     public static User registeredUser = new User();
-    public static Credentials registeredCredentials = new Credentials();
+    UserAPI userAPI;
+
+    private TokenAPI tokenAPI;
+
+//    public static Credentials registeredCredentials = new Credentials();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,19 +45,26 @@ public class MainActivity extends AppCompatActivity {
     public void goFeed(View view) {
         EditText username = findViewById(R.id.usernameLogin);
         EditText pass = findViewById(R.id.passwordLogin);
-//        if (id.getText().toString().equals(registeredUser.getId()) && pass.getText().toString().equals(registeredUser.getPass())) {
 
-        if (username.getText().toString().equals(registeredCredentials.getUsername())
-            && pass.getText().toString().equals(registeredCredentials.getPassword())) {
+        // TODO
+        if (checkCredentials(username.getText().toString(), pass.getText().toString())) {
+
+            // TODO
+            MutableLiveData<String> s = new MutableLiveData<>();
+            tokenAPI.createToken(s);
+            MyApplication.token = s.getValue();
 
             Intent intent = new Intent(this, FeedActivity.class);
             startActivity(intent);
-
         } else {
             alertWrongUserInfo(view);
         }
     }
 
+    private boolean checkCredentials (String username, String password) {
+        User user = userAPI.getUserByUsername(username);
+        return user.password().equals(password);
+    }
     private void alertWrongUserInfo(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

@@ -15,8 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 
-import com.example.project_part2.entities.Credentials;
+import com.example.project_part2.apis.UserAPI;
 import com.example.project_part2.entities.User;
 
 import java.io.File;
@@ -37,6 +38,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText lastNameET;
 
     private Uri pic_taken = null;
+
+    private UserAPI userAPI;
 
 
     @Override
@@ -140,12 +143,15 @@ public class RegisterActivity extends AppCompatActivity {
         // TODO: check password with server
         if (validPassword && validVerify) {
 
-            MainActivity.registeredUser = new User(firstNameET.getText().toString(),
-                                                   lastNameET.getText().toString(),
+            MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+            User temp = new User(firstNameET.getText().toString() + lastNameET.getText().toString(),
+                                                   usernameET.getText().toString(),
+                                                   passwordET.getText().toString(),
                                                    pic_taken.toString());
 
-            MainActivity.registeredCredentials = new Credentials(usernameET.getText().toString(),
-                                                                 passwordET.getText().toString());
+            // TODO
+            userAPI.createUser(temp);
+            MainActivity.registeredUser = userAPI.getUserByUsername(temp.username());
 
             Intent intent = new Intent(this, FeedActivity.class);
             startActivity(intent);

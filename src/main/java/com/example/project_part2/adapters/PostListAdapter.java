@@ -17,14 +17,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_part2.MainActivity;
 import com.example.project_part2.PersonalFeedActivity;
 import com.example.project_part2.R;
-import com.example.project_part2.entities.Comment;
+import com.example.project_part2.apis.UserAPI;
 import com.example.project_part2.entities.Post;
+import com.example.project_part2.entities.User;
 import com.example.project_part2.util.MyApplication;
 
 import java.util.List;
@@ -65,6 +67,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
     public PostListAdapter (Context context) {
         mInflater = LayoutInflater.from(context);
     }
+    public UserAPI userAPI;
 
     @NonNull
     @Override
@@ -80,7 +83,12 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
             // set Post
             Post current = posts.get(position);
 
-            holder.pfp.setImageURI(current.getAuthor().getPfp());
+            // TODO
+            MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+            userAPI.getUserById(userMutableLiveData, current.getAuthorId());
+            User u = userMutableLiveData.getValue();
+
+            if (u != null ) { holder.pfp.setImageURI(u.getPfp()); }
 
             holder.pfp.setOnClickListener(item -> {
 
@@ -116,7 +124,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 
 
 
-            String displayName = current.getAuthor().getDisplayName();
+            String displayName = current.getAuthorId();
             holder.authorName.setText(displayName);
             holder.content.setText(current.getContent());
             holder.timestamp.setText(current.getTimestamp());
@@ -143,18 +151,18 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 
             // Create an adapter for the comments
             // use default user icon for comment author instead of custom user icon.
-            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments());
-            holder.rvComments.setAdapter(commentAdapter);
+//            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments());
+//            holder.rvComments.setAdapter(commentAdapter);
 
-            // Add a new comment
-            holder.btnAddComment.setOnClickListener(v -> {
-                Comment newComment = new Comment(MainActivity.registeredUser.getPfp(), holder.etNewComment.getText().toString());
-                if (!newComment.getContent().isEmpty()) {
-                    current.addComment(newComment);
-                    commentAdapter.notifyDataSetChanged();
-                    holder.etNewComment.getText().clear();
-                }
-            });
+            // TODO: Add a new comment
+//            holder.btnAddComment.setOnClickListener(v -> {
+//                Comment newComment = new Comment(MainActivity.registeredUser.getPfp(), holder.etNewComment.getText().toString());
+//                if (!newComment.getContent().isEmpty()) {
+//                    current.addComment(newComment);
+//                    commentAdapter.notifyDataSetChanged();
+//                    holder.etNewComment.getText().clear();
+//                }
+//            });
 
             // add comment listener on content
             holder.content.setOnClickListener((v) -> editPost(position));
