@@ -35,7 +35,7 @@ public interface PostDao {
 //    MutableLiveData<List<Post>> getAll();
 
     // will need to update version maybe
-    @Database(entities = {Post.class}, version = 1)
+    @Database(entities = {Post.class}, version = 2)
     abstract class PostDB extends RoomDatabase {
         //        private static PostDB instance;
         public abstract PostDao postDao();

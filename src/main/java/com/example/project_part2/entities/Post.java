@@ -6,6 +6,8 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 
+import com.example.project_part2.util.MyApplication;
+
 import org.w3c.dom.Comment;
 
 import java.text.SimpleDateFormat;
@@ -37,7 +39,7 @@ public class Post {
         this.content = content;
         this.image = image;
         this.authorId = authorId;
-        this.date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        this.date = MyApplication.getCurrentDate();
         this.authorPfp = authorPfp;
         this.authorDisplayName = authorDisplayName;
     }
@@ -51,7 +53,7 @@ public class Post {
 //            return null;
 //        }
 //        String uriString = this.image.toString();
-//        return Uri.parse(uriString);
+//        return Uri.parse(uriStrfing);
 //    }
 
     public String getAuthorId() {

@@ -10,30 +10,39 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
+import com.example.project_part2.apis.UserAPI;
+import com.example.project_part2.entities.Friend;
 import com.example.project_part2.entities.User;
+import com.example.project_part2.util.ImageUtil;
+import com.example.project_part2.util.MyApplication;
 
 import java.util.List;
 
 public class IncomingFriendsAdapter extends BaseAdapter {
 
     private Context context;
-    private List<User> incoming;
+    private MutableLiveData<List<Friend>> incoming;
+    private UserAPI userAPI;
 
-    public IncomingFriendsAdapter(Context context, List<User> incoming) {
+    public IncomingFriendsAdapter(Context context, List<Friend> incoming) {
         super();
         this.context = context;
-        this.incoming = incoming;
+        this.incoming = new MutableLiveData<>();
+        this.incoming.setValue(incoming);
+        userAPI = new UserAPI();
     }
     @Override
     public int getCount() {
-        return incoming.size();
+        return incoming.getValue().size();
     }
 
     @Override
     public Object getItem(int position) {
-        return incoming.get(position);
+        return incoming.getValue().get(position);
     }
 
     @Override
@@ -47,27 +56,31 @@ public class IncomingFriendsAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.incoming_friend, parent, false);
         }
 
-        User user = incoming.get(position);
+        Friend f;
+        // if didn't get any posts.
+        if (incoming.getValue() == null) { return null; }
+        else { f = incoming.getValue().get(position); }
 
         ImageView pfpImage = convertView.findViewById(R.id.pfp);
         TextView fullName = convertView.findViewById(R.id.fullname);
-        // TODO: make a new server query for incoming user request
+
 //        TextView time = convertView.findViewById(R.id.time);
         ImageButton acceptButton = convertView.findViewById(R.id.accept);
         ImageButton denyButton = convertView.findViewById(R.id.deny);
 
-        // TODO
-        pfpImage.setImageURI(Uri.parse(user.getPfp()));
-        fullName.setText(user.getDisplayName());
+        if (!f.getPfp().equals("")) {
+            pfpImage.setImageURI(ImageUtil.decodeBase64ToUri(f.getPfp(), MyApplication.context)); }
+
+        fullName.setText(f.getDisplayName());
 
         acceptButton.setOnClickListener(item -> {
-            // TODO: bonus
+            userAPI.acceptFriendRequest(f.getId(), incoming, position, this);
 //            acceptFriend(MainActivity.registeredUser, user);
             // delete this from list
         });
 
         denyButton.setOnClickListener(item -> {
-            // TODO: bonus
+            userAPI.deleteFriendRequest(f.getId(), incoming, position, this);
         });
 
         return convertView;

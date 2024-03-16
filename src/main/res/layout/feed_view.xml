@@ -27,7 +27,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:importantForAccessibility="no"
-                android:src="@drawable/ddog1" />
+                android:src="@drawable/ddog2" />
 
             <TextView
                 android:id="@+id/displayName"
@@ -59,13 +59,22 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/postList"
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/botFeedBar"
-        android:layout_below="@+id/topFeedBar"
-        android:background="@color/AppPrimary"/>
+        android:layout_below="@+id/topFeedBar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/postList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/botFeedBar"
+            android:layout_below="@+id/topFeedBar"
+            android:background="@color/AppPrimary"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/botFeedBar"

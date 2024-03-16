@@ -1,15 +1,21 @@
 package com.example.project_part2.apis;
 
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
+import com.example.project_part2.adapters.PostListAdapter;
+import com.example.project_part2.entities.BodyRequests.IdBody;
 import com.example.project_part2.entities.BodyRequests.PostBodyCreate;
+import com.example.project_part2.entities.BodyRequests.PostBodyEdit;
 import com.example.project_part2.entities.Post;
 import com.example.project_part2.entities.User;
 import com.example.project_part2.util.MyApplication;
+import com.example.project_part2.viewmodels.PostsViewModel;
 
 import java.util.List;
 
@@ -37,81 +43,155 @@ public class PostAPI {
         webServiceAPI = retrofit.create(WebServiceAPI.class);
     }
 
-    public void getPosts(MutableLiveData<List<Post>> posts) {
-
-        Call<List<Post>> call = webServiceAPI.getAllPosts(MyApplication.token.getValue());
-        call.enqueue(new Callback<List<Post>>() {
-
-            @Override
-            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-
-                // setting posts of local db to response from server
-                if (response.body().size() != 0) {
-                    posts.setValue(response.body());
-                }
+//    public void getPosts(MutableLiveData<List<Post>> posts) {
 //
-//                new Thread(() -> {
-//                    dao.clear();
-//                    dao.insertList(response.body());
-//                    postListData.postValue(dao.get());
-//                }).start()
-            }
+//        Call<List<Post>> call = webServiceAPI.getFeedPosts(MyApplication.token.getValue());
+//        call.enqueue(new Callback<List<Post>>() {
+//
+//            @Override
+//            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+//
+//                if (response.isSuccessful()) {
+//                    // setting posts of local db to response from server
+//                    if (response.body().size() != 0) {
+//                        posts.setValue(response.body());
+//                    }
+//                } else { Toast.makeText(MyApplication.context, "error getting posts", Toast.LENGTH_SHORT).show(); }
+//
+////
+////                new Thread(() -> {
+////                    dao.clear();
+////                    dao.insertList(response.body());
+////                    postListData.postValue(dao.get());
+////                }).start()
+//            }
+//
+//
+//            @Override
+//            public void onFailure(Call<List<Post>> call, Throwable t) {
+//                Toast.makeText(MyApplication.context, "error getting posts", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
+    public void createPost(Post newPost, PostsViewModel viewModel) {
 
+        PostBodyCreate postBodyCreate = new PostBodyCreate(newPost.getContent(), newPost.getImage(), newPost.getDate(), newPost.getAuthorPfp(), newPost.getAuthorDisplayName());
+        Call<Post> call = webServiceAPI.createPost(MyApplication.registeredUser.getValue().id(), "Bearer " + MyApplication.token.getValue(), postBodyCreate);
+        call.enqueue(new Callback<Post>() {
             @Override
-            public void onFailure(Call<List<Post>> call, Throwable t) {
-                System.out.println("nooni");
-            }
-        });
-    }
+            public void onResponse(Call<Post> call, Response<Post> response) {
 
-    public void createPost(String content, String image, String date, String authorPfp, String authorDisplayName) {
-
-        PostBodyCreate postBodyCreate = new PostBodyCreate(content, image, date, authorPfp, authorDisplayName);
-        Call<Void> call = webServiceAPI.createPost(MyApplication.registeredUser.getValue().id(), "Bearer " + MyApplication.token, postBodyCreate);
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(MyApplication.context, "post created successfully", Toast.LENGTH_SHORT).show();
+                    if (viewModel.getPosts().getValue() != null) {
+                        List<Post> newPosts = viewModel.getPosts().getValue();
+                        newPosts.add(response.body());
+                        viewModel.getPosts().setValue(newPosts);
+                    }
+
                 } else {
                     Toast.makeText(MyApplication.context, "failed to create post", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<Post> call, Throwable t) {
                 Toast.makeText(MyApplication.context, "failed to create post", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-//    public void editPost(String userId, String postId, Post updatedPost) {
-//        Call<Void> call = webServiceAPI.editPosts(userId, postId, "Bearer " + MyApplication.token, updatedPost);
-//        call.enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                // Handle response
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                // Handle failure
-//            }
-//        });
-//    }
+    public void editPost(Post updatedPost, EditText editText, RecyclerView.Adapter<PostListAdapter.PostViewHolder> adapter) {
 
-    public void deletePost(String userId, String postId) {
-        Call<Void> call = webServiceAPI.deletePost(userId, postId, "Bearer " + MyApplication.token);
+        PostBodyEdit postBodyEdit = new PostBodyEdit(updatedPost.getContent(), updatedPost.getImage(), Integer.toString(updatedPost.getLikes()), null);
+
+        Call<Void> call = webServiceAPI.editPost(MyApplication.registeredUser.getValue().id(), updatedPost.get_id(),"Bearer " + MyApplication.token.getValue(), postBodyEdit);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                // Handle successful deletion
+                if (response.isSuccessful()) {
+                    Toast.makeText(MyApplication.context, "post edited successfully", Toast.LENGTH_SHORT).show();
+                    // update with updated post
+                    String newText = editText.getText().toString();
+                    updatedPost.setContent(newText);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(MyApplication.context, "failed to edit post", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MyApplication.context, "failed to edit post", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void deletePost(List<Post> posts, int position, RecyclerView.Adapter<PostListAdapter.PostViewHolder> adapter) {
+
+        Call<Void> call = webServiceAPI.deletePost(MyApplication.registeredUser.getValue().id(), posts.get(position).get_id(), "Bearer " + MyApplication.token.getValue());
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MyApplication.context, "post deleted successfully", Toast.LENGTH_SHORT).show();
+                    // delete from view
+                    posts.remove(position);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(MyApplication.context, "failed to delete post", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                // Handle failure
+                Toast.makeText(MyApplication.context, "failed to delete post", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void likePost(Post updatedPost) {
+
+        PostBodyEdit postBodyEdit = new PostBodyEdit(updatedPost.getContent(), updatedPost.getImage(), Integer.toString(updatedPost.getLikes()), null);
+
+        Call<Void> call = webServiceAPI.editPost(MyApplication.registeredUser.getValue().id(), updatedPost.get_id(),"Bearer " + MyApplication.token.getValue(), postBodyEdit);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MyApplication.context, "like was successful", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MyApplication.context, "failed to like", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MyApplication.context, "failed to like", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    public void getFeedPosts(MutableLiveData<List<Post>> posts) {
+
+        Call<List<Post>> call = webServiceAPI.getFeedPosts(MyApplication.registeredUser.getValue().id(), "Bearer " + MyApplication.token.getValue());
+        call.enqueue(new Callback<List<Post>>() {
+
+            @Override
+            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
+
+                if (response.isSuccessful()) {
+                    // setting posts of local db to response from server
+                    if (response.body() != null && response.body().size() != 0) {
+                        posts.setValue(null);
+                        posts.setValue(response.body());
+                    }
+                } else { Toast.makeText(MyApplication.context, "error feed posts", Toast.LENGTH_SHORT).show(); }
+            }
+
+            @Override
+            public void onFailure(Call<List<Post>> call, Throwable t) {
+                Toast.makeText(MyApplication.context, "error getting feed posts", Toast.LENGTH_SHORT).show();
             }
         });
     }

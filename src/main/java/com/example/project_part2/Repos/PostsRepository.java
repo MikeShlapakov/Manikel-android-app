@@ -56,10 +56,13 @@ public class PostsRepository {
 
                 List<Post> posts = new LinkedList<>();
 
+                String defaultImg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAeKADAAQAAAABAAAAeAAAAAAI4lXuAAAC8UlEQVR4Ae2dQU7sQAwFAUX6a4401+IAHONfZc7FChZsGXUWXXm2p1gGy89dFaPRKAqv/9/fv1/8eUjg6/Pzz9/dbrc/r1e7+FZtIOfZS0DBe3mW66bgckr2DqTgvTzLdVNwOSV7B1LwXp7luim4nJK9Ayl4L89y3RRcTsnegRS8l2e5bgoup2TvQMej71r3xpzv9u/j43yxlUsCbvASUe8CBff2t5xewUtEvQsU3NvfcnoFLxH1LjhSTybc7/fW5LrM7wa3vs3Wwyt4zah1hYJb61sPr+A1o9YVCm6tbz38sS557oru3427wcPvXwUreDiB4cdzgxU8nMDw47nBCh5OYPjx3GAFDycw/HhusIKHExh+PDdYwcMJDD+eG6zg4QSGH88NVvBwAsOPd3R5vne4B+x4/onG0NZorOAaHrApFIyhrdFYwTU8YFMoGENbo/Gr74uuIYKawg2myBbpq+AiIqgxFEyRLdJXwUVEUGMomCJbpK+Ci4igxlAwRbZIXwUXEUGNoWCKbJG+Ci4ighpDwRTZIn3HvqOj2nuwU77d4BT5i3IVfBHoVIyCU+QvylXwRaBTMQpOkb8od+yn6Ef8Uu/HfjQPfd0NpgmH+ys4LICOVzBNONxfwWEBdLyCacLh/goOC6DjFUwTDvdXcFgAHa9gmnC4v4LDAuh4BdOEw/0VHBZAxyuYJhzur+CwADpewTThcH8FhwXQ8QqmCYf7H6nnh7v/T8Cwt9PxbvBpVD0LFdzT2+mpFXwaVc9CBff0dnpqBZ9G1bPwoJ8T9n3U2RvDDc7yx9MVjCPOBig4yx9PVzCOOBug4Cx/PF3BOOJsgIKz/PF0BeOIswEKzvLH0xWMI84GKDjLH09/und0PNt3424wvkPZAAVn+ePpCsYRZwMUnOWPpysYR5wNGPsp2ueuf28sNzi7YHi6gnHE2QAFZ/nj6QrGEWcDFJzlj6crGEecDVBwlj+ermAccTZAwVn+eLqCccTZAAVn+ePpP4tDHr4SKVqVAAAAAElFTkSuQmCC";
+
                 // observers will get updated from these changes
-                posts.add(new Post("lorem lorem", null, "", "", "grandimama"));
-                posts.add(new Post("lorem lorem2", null, "", "", "fufi"));
-                posts.add(new Post("lorem lorem3", null, "", "", "mome"));
+                posts.add(new Post("lorem lorem", "", "", defaultImg, "grandimama"));
+                posts.add(new Post("lorem lorem2", "", "", defaultImg, "fufi"));
+                posts.add(new Post("lorem lorem3", "", "", defaultImg, "mome"));
+
                 postValue(posts);
 
 //              // "this" will have the value of posts
@@ -74,7 +77,7 @@ public class PostsRepository {
 
                 System.out.println("done sleepin");
                 PostAPI postAPI = new PostAPI();
-                postAPI.getPosts(this);
+                postAPI.getFeedPosts(this);
 
             }).start();
         }

@@ -25,16 +25,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.project_part2.MainActivity;
 import com.example.project_part2.PersonalFeedActivity;
 import com.example.project_part2.R;
+import com.example.project_part2.apis.PostAPI;
 import com.example.project_part2.apis.UserAPI;
 import com.example.project_part2.entities.Post;
 import com.example.project_part2.entities.User;
+import com.example.project_part2.util.ImageUtil;
 import com.example.project_part2.util.MyApplication;
 
 import java.util.List;
 
 public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostViewHolder> {
 
-    class PostViewHolder extends RecyclerView.ViewHolder {
+    public class PostViewHolder extends RecyclerView.ViewHolder {
         private final TextView content;
         private final TextView authorName;
         private final TextView timestamp;
@@ -46,6 +48,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
         private final RecyclerView rvComments;
         private final EditText etNewComment;
         private final ImageButton btnAddComment;
+
 
         public PostViewHolder(View itemView) {
             super(itemView);
@@ -68,7 +71,9 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
     public PostListAdapter (Context context) {
         mInflater = LayoutInflater.from(context);
     }
-    public UserAPI userAPI;
+    public UserAPI userAPI = new UserAPI();
+    private final PostAPI postAPI = new PostAPI();
+
 
     @NonNull
     @Override
@@ -84,6 +89,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
             // set Post
             Post current = posts.get(position);
 
+
             // TODO
 //            MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
 //            userAPI.getUserById(userMutableLiveData, current.getAuthorId());
@@ -92,17 +98,22 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
             if (current.getAuthorPfp() != null ) { holder.pfp.setImageURI(Uri.parse(current.getAuthorPfp())); }
 
             // reduce view height if image is missing
-            if (current.getImage() == null) {
+            if (current.getImage().equals("") || ImageUtil.decodeBase64ToUri(current.getImage(), MyApplication.context) == null) {
                 holder.contentImg.setVisibility(View.GONE);
             } else {
-                holder.contentImg.setImageURI(Uri.parse(current.getImage()));
+                holder.contentImg.setImageURI(ImageUtil.decodeBase64ToUri(current.getImage(), MyApplication.context));
                 holder.contentImg.setVisibility(View.VISIBLE);
             }
 
             holder.authorName.setText(current.getAuthorDisplayName());
             holder.content.setText(current.getContent());
             holder.timestamp.setText(current.getDate());
-//            holder.likeCount.setText(current.getLikeCount());
+
+            // reduce view height if image is missing
+            if (!current.getAuthorPfp().equals("")) {
+                holder.pfp.setImageURI(ImageUtil.decodeBase64ToUri(current.getAuthorPfp(), MyApplication.context));
+                holder.pfp.setVisibility(View.VISIBLE);
+            }
 
             setLikeColor(current, holder.likeBtn);
             // add on click listener for like button
@@ -118,7 +129,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 //            CommentAdapter commentAdapter = new CommentAdapter(mInflater, current.getComments());
 //            holder.rvComments.setAdapter(commentAdapter);
 
-            // TODO: Add a new comment
+            // BONUS: Add a new comment
 //            holder.btnAddComment.setOnClickListener(v -> {
 //                Comment newComment = new Comment(MainActivity.registeredUser.getPfp(), holder.etNewComment.getText().toString());
 //                if (!newComment.getContent().isEmpty()) {
@@ -129,39 +140,63 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 //            });
 
             // add comment listener on content
-            holder.content.setOnClickListener((v) -> editPost(position));
+            holder.content.setOnClickListener( item -> {
+                if (current.getAuthorId().equals(MyApplication.registeredUser.getValue().id())) {
+                    editPost(position);
+                }
+            });
 
             // clickable pfp
             holder.pfp.setOnClickListener(item -> {
 
-                PopupMenu popup = new PopupMenu(MyApplication.context, holder.pfp);
-                popup.getMenuInflater().inflate(R.menu.post_options_menu, popup.getMenu());
+                if (!holder.authorName.getText().toString().equals(MyApplication.registeredUser.getValue().getDisplayName())) {
 
-                // TODO: server
-//                if (!areFriends(MainActivity.registeredUser, current.getAuthor())) {
-//                    MenuItem seePostsItem = popup.getMenu().findItem(R.id.see_posts);
-//                    seePostsItem.setEnabled(false);
-//                }
+                    PopupMenu popup = new PopupMenu(MyApplication.context, holder.pfp);
+                    popup.getMenuInflater().inflate(R.menu.post_options_menu, popup.getMenu());
+                    MenuItem addFriendItem = popup.getMenu().findItem(R.id.add_friend);
 
-                popup.setOnMenuItemClickListener(item1 -> {
-                    if (item1.getItemId() == R.id.add_friend) {
-                        Toast.makeText(MyApplication.context, "friend request sent", Toast.LENGTH_SHORT).show();
-                        return true;
+                    if (!userAPI.isFriend(MyApplication.registeredUser.getValue(), current.getAuthorId())) {
+                        // if is not a friend
+                        MenuItem seePostsItem = popup.getMenu().findItem(R.id.see_posts);
+                        seePostsItem.setEnabled(false);
+                    } else {
+                        // if is a friend
+                        MenuItem seePostsItem = popup.getMenu().findItem(R.id.see_posts);
+
+                        addFriendItem.setTitle("Delete Friend");
+//                        addFriendItem.setEnabled(false);
+                        seePostsItem.setEnabled(true);
                     }
-                    else if (item1.getItemId() == R.id.see_posts) {
-                        Toast.makeText(MyApplication.context, "entering friend's posts", Toast.LENGTH_SHORT).show();
 
-                        // i want to start the activity but this class isnt of type AppcompatActivity
-                        Intent intent = new Intent(MyApplication.context, PersonalFeedActivity.class);
+                    popup.setOnMenuItemClickListener(item1 -> {
+
+                        // if clicking on myself then nothing
+                        if (item1.getItemId() == R.id.add_friend) {
+                            if (addFriendItem.getTitle().toString().equals("Delete Friend")) {
+                                userAPI.deleteFriend(current.getAuthorId());
+                            } else {
+                                userAPI.sendFriendRequest(current.getAuthorId());
+                            }
+                            return false;
+                        }
+                        else if (item1.getItemId() == R.id.see_posts) {
+//                            Toast.makeText(MyApplication.context, "entering friend's posts", Toast.LENGTH_SHORT).show();
+
+                            // i want to start the activity but this class isn't of type AppcompatActivity
+                            Intent intent = new Intent(MyApplication.context, PersonalFeedActivity.class);
 //                            startActivity(intent);
-                        mInflater.getContext().startActivity(intent);
+                            intent.putExtra("DISPLAY_NAME", current.getAuthorDisplayName());
+                            intent.putExtra("PFP", current.getAuthorPfp());
+                            intent.putExtra("ID", current.getAuthorId());
+                            mInflater.getContext().startActivity(intent);
 
-                        return true;
-                    }
-                    return false;
-                });
+                            return true;
+                        }
+                        return false;
+                    });
 
-                popup.show();
+                    popup.show();
+                }
             });
 
             holder.itemView.requestLayout();
@@ -169,7 +204,9 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
         }
     }
 
+
     private void editPost(int position) {
+
         Post post = posts.get(position);
         AlertDialog.Builder builder = new AlertDialog.Builder(mInflater.getContext());
         builder.setTitle("Edit Post");
@@ -182,14 +219,11 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 
         // Set up the buttons
         builder.setPositiveButton("OK", (dialog, which) -> {
-            String newText = input.getText().toString();
-            post.setContent(newText);
-            notifyDataSetChanged();
+            postAPI.editPost(post, input, this);;
         });
 
         builder.setNegativeButton("Delete", (dialog, which) -> {
-            posts.remove(position);
-            notifyDataSetChanged();
+            postAPI.deletePost(posts, position, this);
         });
 
         builder.show();
@@ -207,6 +241,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
         post.like();
         setLikeColor(post, btn);
         count.setText(Integer.toString(post.getLikeCount()));
+        postAPI.likePost(post);
     }
 
     @Override

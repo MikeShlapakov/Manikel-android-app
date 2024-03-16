@@ -3,6 +3,7 @@ package com.example.project_part2.apis;
 import com.example.project_part2.entities.BodyRequests.CommentBodyCreate;
 import com.example.project_part2.entities.BodyRequests.CommentBodyEdit;
 import com.example.project_part2.entities.BodyRequests.FriendBodySend;
+import com.example.project_part2.entities.BodyRequests.IdBody;
 import com.example.project_part2.entities.BodyRequests.PostBodyCreate;
 import com.example.project_part2.entities.BodyRequests.PostBodyEdit;
 import com.example.project_part2.entities.BodyRequests.TokenBody;
@@ -24,22 +25,6 @@ import retrofit2.http.Path;
 
 public interface WebServiceAPI {
 
-    // retrofit will implement these functions
-
-//    // ===================  POSTS =======================
-//    @GET("posts")
-//    Call<List<Post>> getPosts();
-//
-//    @POST("posts")
-//    Call<Void> createPost(@Body Post post);
-//
-//    @DELETE("post/{id}")
-//    Call<Void> deletePost(@Path("id") int id);
-//
-//
-//
-//
-//
 
     // ===================  TOKENS =======================
 
@@ -70,14 +55,14 @@ public interface WebServiceAPI {
 
     // ===================  POSTS =======================
 
-    @GET("posts")
-    Call<List<Post>> getAllPosts(@Header("Authorization") String authToken);
+    @GET("posts/feed/{id}")
+    Call<List<Post>> getFeedPosts(@Path("id") String id, @Header("Authorization") String authToken);
 
-    @GET("users/{id}/posts")
-    Call<List<Post>> getUserPosts(@Path("id") String id, @Header("Authorization") String authToken);
+    @GET("posts/{id}/friend-posts/{fid}")
+    Call<List<Post>> getFriendPosts(@Path("id") String id, @Path("fid") String fid, @Header("Authorization") String authToken);
 
     @POST("users/{id}/posts")
-    Call<Void> createPost(@Path("id") String id, @Header("Authorization") String authToken, @Body PostBodyCreate postBodyCreate);
+    Call<Post> createPost(@Path("id") String id, @Header("Authorization") String authToken, @Body PostBodyCreate postBodyCreate);
 
     @PATCH("users/{id}/posts/{pid}")
     Call<Void> editPost (@Path("id") String id, @Path("pid") String pid, @Header("Authorization") String authToken, @Body PostBodyEdit postBodyEdit);
@@ -102,14 +87,15 @@ public interface WebServiceAPI {
     // ===================  FRIENDS =======================
 
     @GET("posts/{id}")
-    Call<List<Post>> getFriends(@Path("id") String id, @Header("Authorization") String authToken);
+    Call<List<String>> getFriends(@Path("id") String id, @Header("Authorization") String authToken);
 
-    @POST("posts/{id}")
-    Call<Post> sendFriendRequest(@Path("id") String dstId, @Header("Authorization") String authToken, @Body FriendBodySend friendBodySend);
+    @POST("users/{id}/friends")
+    Call<Void> sendFriendRequest(@Path("id") String dstId, @Header("Authorization") String authToken, @Body FriendBodySend friendBodySend);
 
-    @PATCH("users/{id}/comments/{fid}")
-    Call<Void> acceptFriendRequest(@Path("id") String id, @Header("Authorization") String authToken, @Path("fid") String fid );
+    @PATCH("users/{id}/friends/{fid}")
+    Call<Void> acceptFriendRequest(@Path("id") String id, @Path("fid") String fid, @Header("Authorization") String authToken);
 
-    @DELETE("users/{id}/comments/{fid}")
-    Call<Void> deleteFriendRequest(@Path("id") String id, @Header("Authorization") String authToken, @Path("fid") String fid);
+    @DELETE("users/{id}/friends/{fid}")
+    Call<Void> deleteFriendRequest(@Path("id") String id, @Path("fid") String fid, @Header("Authorization") String authToken);
+
 }

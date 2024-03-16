@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/background">
+    android:background="@color/AppPrimary">
 
     <LinearLayout
         android:id="@+id/topFeedBar"
@@ -27,7 +27,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:importantForAccessibility="no"
-                android:src="@drawable/ddog1" />
+                android:src="@drawable/ddog2" />
 
             <TextView
                 android:id="@+id/displayName"
@@ -47,15 +47,6 @@
             app:iconifiedByDefault="false"
             android:layout_weight="3"
             android:paddingHorizontal="10dp"/>
-
-        <ImageButton
-            android:id="@+id/settings"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:background="@android:color/transparent"
-            android:paddingHorizontal="30dp"
-            android:src="@drawable/ic_edit" />
 
     </LinearLayout>
 
@@ -84,7 +75,7 @@
                 android:id="@+id/feedOwnerPfp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/ddog1"/>
+                android:src="@drawable/ddog2"/>
 
             <TextView
                 android:id="@+id/feedOwnerDisplayName"
@@ -96,14 +87,6 @@
                 android:text="@string/demo_name"
                 android:textSize="30sp"
                 android:textStyle="bold" />
-
-            <ImageButton
-                android:id="@+id/isFriendBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="0"
-                android:src="@drawable/check" />
 
             <View
                 android:layout_width="5dp"
@@ -117,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/botFeedBar"
-        android:layout_below="@+id/linearLayout" />
+        android:layout_below="@+id/linearLayout"/>
 
     <LinearLayout
         android:id="@+id/botFeedBar"

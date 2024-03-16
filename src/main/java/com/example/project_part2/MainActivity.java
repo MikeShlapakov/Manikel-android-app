@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
 //      PACKAGE_NAME = getApplicationContext().getPackageName();
         tokenAPI = new TokenAPI();
+        userAPI = new UserAPI();
     }
 
     public void goRegister(View view) {
@@ -48,78 +49,28 @@ public class MainActivity extends AppCompatActivity {
     public void goFeed(View view) {
 
         EditText username = findViewById(R.id.usernameLogin);
-        EditText pass = findViewById(R.id.passwordLogin);
+        EditText password = findViewById(R.id.passwordLogin);
 
-        if (checkCredentials(username.getText().toString(), pass.getText().toString())) {
+        MutableLiveData<Boolean> response = new MutableLiveData<>();
 
-            tokenAPI.createToken(MyApplication.registeredUser.getValue().id(), MyApplication.token);
-            Intent intent = new Intent(this, FeedActivity.class);
-            startActivity(intent);
-
-        } else {
-            alertWrongUserInfo(view);
-        }
-    }
-
-    // CHECK
-    private boolean checkCredentials (String username, String password) {
-
-        // this will give us the correct user that is on the local database,
-        // if not registered, registeredUser will hold the default user
-        // if registered, registeredUser will hold a true user.
-        // *registeredUser is never null*
-        User user = MyApplication.userDao.get(MyApplication.registeredUser.getValue().lid());
-
-        // if not found in local db, check with server
-        if (user == null) {
-
-            // create a local Mutable user that holds the entered username
-            MutableLiveData<User> userFromServer = new MutableLiveData<>();
-            User temp = new User(); temp.setUsername(username);
-            userFromServer.setValue(temp);
-
-            final boolean[] stop = {false};
-            int timeoutLoopCount = 200;
-
-            userFromServer.observe(this, new Observer<User>() {
-                @Override
-                public void onChanged(User user) {
-                    stop[0] = true;
-                }
-            });
-
-            // find user in server with same username,
-            // and update our user (we want its newly set password)
-            userAPI.updateUser(userFromServer);
-
-            for (int i = 0; i < timeoutLoopCount; i++) {
-
-                if (stop[0]) { break; }
-
-                if (i == timeoutLoopCount-1) {
-                    // TIMEOUT
-                    Toast.makeText(MyApplication.context, "server request for user timed out", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-
-                try {
-                    Thread.sleep(100);
-                } catch (Exception e) {
-                    e.printStackTrace();
+        userAPI.checkCredentials(username.getText().toString(), password.getText().toString(), response);
+        response.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (response.getValue()) {
+                    gotoFeed();
+                } else {
+                    alertWrongUserInfo(view);
                 }
             }
-
-            // if not in server, then doesn't exist at all
-            if (userFromServer.getValue() == null) { return false; }
-
-            // check if passwords match
-            return userFromServer.getValue().password().equals(password);
-        }
-
-        // if exists in local db
-        return user.password().equals(password);
+        });
     }
 
+    private void gotoFeed () {
+        tokenAPI.createToken(MyApplication.registeredUser.getValue().id(), MyApplication.token);
+        Intent intent = new Intent(this, FeedActivity.class);
+        startActivity(intent);
+    }
 
     private void alertWrongUserInfo(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

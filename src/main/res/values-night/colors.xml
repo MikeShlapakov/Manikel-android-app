@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#7E95B8</color>
 
     <!--    dark colors-->
     <color name="AppPrimary">#46618A</color>
-    <color name="AppSecondary">#112237</color>
-    <color name="background">#F6EBFF</color>
-    <color name="textPrimary">#2E2B39</color>
-    <color name="textSecondary">#F1EFF6</color>
+    <color name="AppSecondary">#344A6A</color>
+    <color name="background">#5C6C85</color>
+    <color name="textPrimary">#E4E2EF</color>
+    <color name="textSecondary">#E4E2EF</color>
 </resources>

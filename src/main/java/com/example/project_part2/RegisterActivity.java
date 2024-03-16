@@ -19,6 +19,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.project_part2.apis.UserAPI;
 import com.example.project_part2.entities.User;
+import com.example.project_part2.util.ImageUtil;
 import com.example.project_part2.util.MyApplication;
 
 import java.io.File;
@@ -143,8 +144,10 @@ public class RegisterActivity extends AppCompatActivity {
 
             String picString;
 
-//          if (pic_taken == null) { picString = "pfp"; } else {  picString = pic_taken.toString(); }
-            picString = "pfp";
+          if (pic_taken == null) {
+              picString = "data:image/webp;base64,UklGRkwFAABXRUJQVlA4TD8FAAAvd8AdAKflIJIkRershTj/Ys4ePFpA0LZtnA7j2R4cg7aNJKV7/IEdpS+Z/3XIq0AioEUBSkkgESLEIAWkeRcEQsYEIi3CcQ+y7yO0lFoiQikNGmmdVi9BKK190rS8TygNAkJkpLEQ1BAhaUppEJhThHQgkVEiYyk1CeByXGb1EJBASJrLRRhekYYIiDREBBJpIBEBREgaovlr3EWj0XTHn8xH5GPz3/lvEQWFW9sMSVLV2LZt27Zt255o27ZtK2d/4fSbWRmR31rxZUT0H4IjSVKjqL0Zo8HWNuOGFwT+mZ5Z63afv/fyk2/usV4361dj7o5HIkTYn/srwAsvCFfxF1I348g34TK+nkHZ0O2fhUQ+81CyRp8XkmFN1Jy7xkFcfnVjR5/xdTXHCYfcnUPSorfCJrq4zXIMF0cbW94uImj2G4HCi/qskDGaBebNbHqPuGNQRrflKpwuMHo0MUPOGVRouY4RGD2Eli22YTWWRKpto7aQMu0j0pZUNPrIlBwKsVV64yFC5mNRTrOkk4almuk4KwZFdMnTEWYwZ+mUDMe/KfrTbCq2gqheFXo12ErFHft3dd80EZMFaFHD4Byn0LASxPiKwmANDdtArioa7KDhFKhSpQqcoeEWqFfFgJs0PLGPVDnwEQ2/gG5VGLym4YcXXtHwGLSqosEDGm57MeQ6DSdApSqV4CSl01G2KtlgGw3LcbE+oAbjEn4FDRMNpEkNxjlOCNDITZCvBtvKJBGbcXmlpHIwLrA2k1k9f1N3JtS4oKSzgj4OwjrkdWhwnNB7wS9mMKnSO+FUM0hTek+4D/89cmQZnN1eJmTCezyUCjnlOLf3EwKUshGFSX2wRhsCpASPCdtG1w9gIzDHggFaGXFNYFLb3eFUg66NCFDLlGfCNirHReFiowV6NiVATHD2sl0fhL2zktvguBvWueHGlg+7ls0OUhq26uhzESqRWeU1TR0+6/IsI0Ll+dFVI2iYd/CdUJ53rAm0X08Lj+Iv9NaY/d+EZ/E1e2jxC+NpfO2Z9V+Nk+T8yobWjs6faS5MDHOm/cLmzp/paG2o5GThlK/rvTHsgMPEw9MqQ9WK3tqizOSEGE4wuqjWD1VDKtPChT0Hhnlg7CWH5zG321Ic1g6vw6Wxyg2/amwyOywP0qGNLVdZtcMCRTdZHoWjDeawYpsESuqyPItOMhhWask327A+y8MY26hvrNB0W0XOtjxOtq1aT1fnDE40ZcBrrI3iLssSnGZMt+95OAaPQNWfgjewSLX6BNLC4EZQjaUGFFgkUoDHsFSNK7ii6KWh1wBW2W0us4jEKOxIb8XH9FOhWV1H+o7TdkqbtQJTDWimoxmPQ8tbg039ATpYq+pI77a94yQUA/bIO48XxijReE1a3kPQRgkDLV+cv4N+SjT4zrJG4jnBIhU8N4yQ7ijgqooWBuOke1UglpZYMPmvQwOF0cJVwhLqrM70cOEqnN5JQqFwHd0Ub1xHD1AQbepdN+hyRGyP5So9saadAmPcn9/SRabvMto0/ZkSbeo8GfLr3dGvtl79AaqTk/AmEVp1MgaMlzUKrwXS2lEEGCm9fsYO0gAlA9hNkm81PAPtlLSDpwFp2A6to6QOXJS3H+RRqpMa7Je3DndFaUexYJ28mTjjVjr1qhXnMjMgn0egiI4idTcK7bS9QlR+YZzbThUW4JSrqNTJKjyKBQpvm4jpo7GjvhiVN1asxqemhIZSPIbViu7av48Nyk4KOrE9eV/Vnf5r8clJ7PdefyIewVplF3sv224p975OZuD8ddANBgA=";
+          } else {  picString = ImageUtil.imageViewToBase64(findViewById(R.id.pfp), MyApplication.context); }
+
 
             User newUser = new User(firstNameET.getText().toString() + lastNameET.getText().toString(),
                                                    usernameET.getText().toString(),

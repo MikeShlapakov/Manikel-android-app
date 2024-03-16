@@ -9,11 +9,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,19 +31,24 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.project_part2.adapters.IncomingFriendsAdapter;
 import com.example.project_part2.adapters.PostListAdapter;
 import com.example.project_part2.apis.PostAPI;
 import com.example.project_part2.apis.TokenAPI;
+import com.example.project_part2.apis.UserAPI;
+import com.example.project_part2.entities.Friend;
 import com.example.project_part2.entities.Post;
 //import com.example.project_part2.util.Util;
 import com.example.project_part2.entities.User;
+import com.example.project_part2.util.ImageUtil;
 import com.example.project_part2.util.MyApplication;
 import com.example.project_part2.viewmodels.PostsViewModel;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -59,6 +69,10 @@ public class FeedActivity extends AppCompatActivity {
     private EditText newPostEditText;
     private PostsViewModel viewModel;
     private PostAPI postAPI;
+    private UserAPI userAPI;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private Uri img_taken = null;
 
 
     @Override
@@ -68,27 +82,49 @@ public class FeedActivity extends AppCompatActivity {
 
         // init posts repo
         // holds sample posts from the .json at first
-        // this also asks for posts from serve
+        // this also asks for posts from server
         viewModel = new ViewModelProvider(this).get(PostsViewModel.class);
-        postAPI = new PostAPI();
+        postAPI = new PostAPI(); userAPI = new UserAPI();
+
 
         ImageButton settingsButton = findViewById(R.id.settings);
 
-        settingsButton.setOnClickListener(item -> {
+        MutableLiveData<List<Friend>> incomingFriendRequests = new MutableLiveData<>();
+        userAPI.getFriendRequests(incomingFriendRequests);
 
-            PopupWindow popupWindow = new PopupWindow(context);
-            ListView listView = new ListView(context);
-            List<User> incoming = Collections.singletonList(new User());
-            IncomingFriendsAdapter adapter = new IncomingFriendsAdapter(context, incoming);
-            listView.setAdapter(adapter);
+        // only after response from server the button can be used
+        incomingFriendRequests.observe(this, new Observer<List<Friend>>() {
+            @Override
+            public void onChanged(List<Friend> friends) {
 
-            popupWindow.setContentView(listView);
-            popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
-            popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
-            popupWindow.setFocusable(true); // To close it on outside touch
-            popupWindow.showAsDropDown(settingsButton);
+                settingsButton.setOnClickListener(item -> {
 
+                    if (incomingFriendRequests.getValue() != null && incomingFriendRequests.getValue().size() > 0) {
+                        PopupWindow popupWindow = new PopupWindow(context);
+                        ListView listView = new ListView(context);
+
+                        IncomingFriendsAdapter adapter = new IncomingFriendsAdapter(context, incomingFriendRequests.getValue());
+                        listView.setAdapter(adapter);
+
+//                    popupWindow.setBackgroundDrawable(AppCompatResources.getDrawable(R.drawable.ddog3));
+                        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.YELLOW));
+                        popupWindow.setContentView(listView);
+//            popupWindow.setWidth(LinearLayout.LayoutParams.WRAP_CONTENT);
+//            popupWindow.setWidth(findViewById(R.id.topLayout).getWidth());
+//                        popupWindow.setWidth(getLayoutWidth(MyApplication.context, R.id.incomingLayout));
+                        popupWindow.setWidth(770);
+//            popupWindow.setWidth(findViewById(R.id.topLayout).getWidth());
+                        popupWindow.setHeight(LinearLayout.LayoutParams.WRAP_CONTENT);
+                        popupWindow.setFocusable(true);
+                        popupWindow.showAsDropDown(settingsButton);
+
+                    } else {
+                        Toast.makeText(MyApplication.context, "don't have any friend requests to show", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
+
 
         setDarkMode();
 
@@ -107,9 +143,20 @@ public class FeedActivity extends AppCompatActivity {
                 adapter.setPosts(posts);
                 adapter.notifyDataSetChanged();
         });
-//        }
+
         // set the user info display
         setUserInfoFeed();
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                viewModel.getPostsFromServer();
+                userAPI.updateUser(MyApplication.registeredUser);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
     }
 
     private void setUserInfoFeed() {
@@ -118,11 +165,10 @@ public class FeedActivity extends AppCompatActivity {
         activeUserInfo.setText(displayName);
 
         ImageView activeUserPic = findViewById(R.id.pfp);
-        // TODO
-        if (MyApplication.registeredUser.getValue().getPfp() == null) {
+        if (MyApplication.registeredUser.getValue().getPfp().equals("")) {
             activeUserPic.setImageURI(null);
         } else {
-            activeUserPic.setImageURI(Uri.parse(MyApplication.registeredUser.getValue().getPfp()));
+            activeUserPic.setImageURI(ImageUtil.decodeBase64ToUri(MyApplication.registeredUser.getValue().getPfp(), context));
         }
     }
 
@@ -157,12 +203,12 @@ public class FeedActivity extends AppCompatActivity {
         showAddDialog();
     }
 
-    public void checkInfo(View view) {
-        // make a dropdown menu with
-        // - add friend (message at the bottom saying friend request sent)
-        //      afterwards button disabled if already sent
-        // - show posts
-    }
+//    public void checkInfo(View view) {
+//        // make a dropdown menu with
+//        // - add friend (message at the bottom saying friend request sent)
+//        //      afterwards button disabled if already sent
+//        // - show posts
+//    }
 
     public void showAddDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -178,24 +224,21 @@ public class FeedActivity extends AppCompatActivity {
                 .setPositiveButton("Add", (dialog, which) -> {
                     Context context = ((AlertDialog) dialog).getContext();
                     String content = newPostEditText.getText().toString().trim();
-                    // TODO: b64
-                    String imageUriString = newPostImageView.getTag().toString().trim();
-                    // don't allow empty posts
-                    if (content.isEmpty()) {
-                        // Show an error message with Toast
-                        Toast.makeText(context, "Post cannot be empty!", Toast.LENGTH_SHORT).show();
-                    } else {
-//                        Uri imageUri = Uri.parse(imageUriString);
 
-                        Post newPost = new Post(content, imageUriString, MyApplication.registeredUser.getValue().id(), MyApplication.registeredUser.getValue().getPfp(), MyApplication.registeredUser.getValue().getDisplayName());
+//                    Uri img = Uri.parse(newPostImageView.getAbsolutePath());
+//                    String imageString = "data:image/png;base64," + ImageUtil.imageViewToBase64(newPostImageView, MyApplication.context);
+                    // don't allow empty posts
+                    if (content.isEmpty() || img_taken == null) {
+                        // Show an error message with Toast
+                        Toast.makeText(context, "Fill all the fields!", Toast.LENGTH_SHORT).show();
+
+                    } else {
+
+//                      Uri imageUri = Uri.parse(imageUriString);
+                        Post newPost = new Post(content, ImageUtil.imageViewToBase64(newPostImageView, MyApplication.context), MyApplication.registeredUser.getValue().id(), MyApplication.registeredUser.getValue().getPfp(), MyApplication.registeredUser.getValue().getDisplayName());
 
                         // send newPost to server
-                        postAPI.createPost(newPost.getContent(), newPost.getImage(), newPost.getDate(), MyApplication.registeredUser.getValue().getPfp(), MyApplication.registeredUser.getValue().getDisplayName());
-
-                        if (viewModel.getPosts().getValue() != null) { viewModel.getPosts().getValue().add(newPost); }
-
-//                         TODO: how to add post?
-//                        postList.add(newPost);
+                        postAPI.createPost(newPost, viewModel);
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
@@ -237,12 +280,15 @@ public class FeedActivity extends AppCompatActivity {
                 File imageFile = new File(internalStorageDir, fileName);
                 try (FileOutputStream outputStream = new FileOutputStream(imageFile)) {
                     // save the image to the desired location
-                    thumbnail.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                    Uri imagePath = Uri.parse(imageFile.getAbsolutePath());
+                    if (thumbnail != null) {
+                        thumbnail.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                    }
+
+                    img_taken = Uri.parse(imageFile.getAbsolutePath());
                     newPostImageView.setImageURI(null); // clear image view cache
-                    newPostImageView.setImageURI(imagePath);
+                    newPostImageView.setImageURI(img_taken);
                     // set the tag if the image view to the image Uri for easy access across app
-                    newPostImageView.setTag(imagePath.toString());
+                    newPostImageView.setTag(img_taken.toString());
 
                 } catch (IOException e){
                     e.printStackTrace();
@@ -250,10 +296,10 @@ public class FeedActivity extends AppCompatActivity {
                 }
             } else {
                 // get the new image URI
-                Uri newImageUri = data.getData();
+                img_taken = data.getData();
                 // update the imageView to display the selected image
-                newPostImageView.setImageURI(newImageUri);
-                newPostImageView.setTag(newImageUri.toString());
+                newPostImageView.setImageURI(img_taken);
+                newPostImageView.setTag(img_taken.toString());
             }
         }
     }
@@ -262,9 +308,26 @@ public class FeedActivity extends AppCompatActivity {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         // the post URL is stored as TAG in the timeStamp TextView
-        String postUrl = findViewById(R.id.tvTimeStamp).getTag().toString();
-        shareIntent.putExtra(Intent.EXTRA_TEXT, postUrl);
+        TextView tv = findViewById(R.id.tvContent);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, tv.getText().toString());
+        shareIntent.putExtra(Intent.EXTRA_TEXT, tv.getText().toString());
         startActivity(Intent.createChooser(shareIntent, "Share with"));
     }
+
+//    public int getLayoutWidth(Context context, int layoutResId) {
+//        // Ensure you're using a LayoutInflater from the correct context
+//        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//
+//        // Inflate the layout. The second parameter is the root view, which is null because we're just measuring.
+//        View layoutView = inflater.inflate(layoutResId, null);
+//
+//        // Make the view measure itself
+//        layoutView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+//
+//        // Return the measured width
+//        return layoutView.getMeasuredWidth();
+//    }
+
 }
 

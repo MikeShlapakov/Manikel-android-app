@@ -1,37 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="end">
 
     <LinearLayout
-        android:id="@+id/topLayout"
-        android:layout_width="match_parent"
+        android:id="@+id/incomingLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="horizontal"
         android:padding="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/AppPrimary">
 
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="49dp"
+            android:paddingEnd="40dp">
 
             <ImageView
                 android:id="@+id/pfp"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
                 android:padding="0dp"
-                android:src="@drawable/ddog1" />
-        <!--        <ImageView-->
-        <!--            android:id="@+id/ivAuthorPicture"-->
-        <!--            android:layout_width="55dp"-->
-        <!--            android:layout_height="55dp"-->
-        <!--            android:importantForAccessibility="no"-->
-        <!--            android:src="@drawable/ddog1" />-->
+                android:src="@drawable/ddog2" />
+            <!--        <ImageView-->
+            <!--            android:id="@+id/ivAuthorPicture"-->
+            <!--            android:layout_width="55dp"-->
+            <!--            android:layout_height="55dp"-->
+            <!--            android:importantForAccessibility="no"-->
+            <!--            android:src="@drawable/ddog1" />-->
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -63,15 +65,15 @@
             android:id="@+id/accept"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/check"
-            android:paddingHorizontal="10dp"/>
+            android:paddingHorizontal="10dp"
+            android:src="@drawable/check" />
 
         <ImageButton
             android:id="@+id/deny"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:src="@drawable/close"
-            android:paddingLeft="10dp"/>
+            android:paddingLeft="10dp"
+            android:src="@drawable/close" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

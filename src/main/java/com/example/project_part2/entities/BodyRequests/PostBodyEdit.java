@@ -1,13 +1,18 @@
 package com.example.project_part2.entities.BodyRequests;
 
-public class PostBodyEdit {
+import java.util.List;
 
+public class PostBodyEdit {
     String content;
     String image;
+    String likes;
+    List<String> comments;
 
-    public PostBodyEdit(String content, String image) {
+    public PostBodyEdit(String content, String image, String likes, List<String> comments) {
         this.content = content;
         this.image = image;
+        this.likes = likes;
+        this.comments = comments;
     }
 
     public String getContent() {
@@ -24,5 +29,21 @@ public class PostBodyEdit {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getLikes() {
+        return likes;
+    }
+
+    public void setLikes(String likes) {
+        this.likes = likes;
+    }
+
+    public List<String> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<String> comments) {
+        this.comments = comments;
     }
 }

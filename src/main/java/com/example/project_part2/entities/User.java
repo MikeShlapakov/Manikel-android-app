@@ -28,10 +28,11 @@ public class User {
     // Uri as b64 string
     private String pfp;
 
-//
-//    private List<String> friends;
-//
-//    private List<String> friendRequests;
+    @Ignore
+    private List<String> friends;
+
+    @Ignore
+    private List<String> friendRequests;
 
     @Ignore
     public User() {
@@ -92,5 +93,21 @@ public class User {
 
     public void setDisplayName (String displayName) {
         this.displayName = displayName;
+    }
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
+    }
+
+    public List<String> getFriendRequests() {
+        return friendRequests;
+    }
+
+    public void setFriendRequests(List<String> friendRequests) {
+        this.friendRequests = friendRequests;
     }
 }
