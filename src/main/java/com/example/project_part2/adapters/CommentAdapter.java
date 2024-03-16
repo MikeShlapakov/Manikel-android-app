@@ -14,22 +14,21 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
+import com.example.project_part2.entities.Comment;
 import com.example.project_part2.entities.User;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
-    private final List<String> comments;
+    private final List<Comment> comments;
     private final LayoutInflater mInflater;
 
-    private final Uri author_pfp;
-
-    public CommentAdapter(LayoutInflater inflater, List<String> comments, Uri author_pfp) {
+    public CommentAdapter(LayoutInflater inflater, List<Comment> comments) {
         mInflater = inflater;
         this.comments = comments;
-        this.author_pfp = author_pfp;
     }
 
     @NonNull
@@ -37,14 +36,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comment_item, parent, false);
         ImageView fd = itemView.findViewById(R.id.ivProfileComment);
-        fd.setImageURI(author_pfp);
+        fd.setImageURI(MainActivity.registeredUser.getPfp());
         return new CommentViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         // set the comment text
-        String comment = comments.get(position);
+        String comment = comments.get(position).getContent();
         holder.tvComment.setText(comment);
 
         // set the btnEditComment onClick
@@ -64,7 +63,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         // Set up the buttons
         builder.setPositiveButton("OK", (dialog, which) -> {
             String newText = input.getText().toString();
-            comments.set(position, newText);
+            comments.set(position, new Comment(MainActivity.registeredUser.getPfp(), newText));
             notifyDataSetChanged();
         });
 

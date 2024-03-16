@@ -9,12 +9,14 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.project_part2.entities.Credentials;
 import com.example.project_part2.entities.User;
 
 public class MainActivity extends AppCompatActivity {
 
     public static String PACKAGE_NAME = "com.example.project_part2";
     public static User registeredUser = new User();
+    public static Credentials registeredCredentials = new Credentials();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +36,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goFeed(View view) {
-        EditText id = findViewById(R.id.usernameLogin);
+        EditText username = findViewById(R.id.usernameLogin);
         EditText pass = findViewById(R.id.passwordLogin);
 //        if (id.getText().toString().equals(registeredUser.getId()) && pass.getText().toString().equals(registeredUser.getPass())) {
-        if (id.getText().toString().equals(registeredUser.getUsername()) && pass.getText().toString().equals(registeredUser.getPass())) {
+
+        if (username.getText().toString().equals(registeredCredentials.getUsername())
+            && pass.getText().toString().equals(registeredCredentials.getPassword())) {
+
             Intent intent = new Intent(this, FeedActivity.class);
             startActivity(intent);
+
         } else {
             alertWrongUserInfo(view);
         }

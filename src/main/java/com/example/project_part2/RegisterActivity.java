@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.project_part2.entities.Credentials;
 import com.example.project_part2.entities.User;
 
 import java.io.File;
@@ -59,7 +60,6 @@ public class RegisterActivity extends AppCompatActivity {
         lastNameET = findViewById(R.id.lastNameInput);
     }
 
-
     private final TextWatcher passwordWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
@@ -72,7 +72,6 @@ public class RegisterActivity extends AppCompatActivity {
             validatePassword(s.toString());
         }
     };
-
 
     private final TextWatcher verifyWatcher = new TextWatcher() {
         @Override
@@ -138,13 +137,15 @@ public class RegisterActivity extends AppCompatActivity {
         boolean validPassword = validatePassword(password);
 
         // if all is good, register and goto feed
+        // TODO: check password with server
         if (validPassword && validVerify) {
 
             MainActivity.registeredUser = new User(firstNameET.getText().toString(),
                                                    lastNameET.getText().toString(),
-                                                   usernameET.getText().toString(),
-                                                   passwordET.getText().toString(),
-                                                   pic_taken);
+                                                   pic_taken.toString());
+
+            MainActivity.registeredCredentials = new Credentials(usernameET.getText().toString(),
+                                                                 passwordET.getText().toString());
 
             Intent intent = new Intent(this, FeedActivity.class);
             startActivity(intent);
