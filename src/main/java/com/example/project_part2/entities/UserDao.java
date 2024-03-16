@@ -1,5 +1,4 @@
 package com.example.project_part2.entities;
-
 import android.content.Context;
 
 import androidx.lifecycle.MutableLiveData;
@@ -15,35 +14,35 @@ import androidx.room.Update;
 import java.util.List;
 
 @Dao
-public interface PostDao {
-    @Query("SELECT * FROM post")
-    List<Post> index();
+public interface UserDao {
+    @Query("SELECT * FROM user")
+    List<User> index();
 
-    @Query("SELECT * FROM post WHERE _lid = :id")
-    Post get(int id);
+    @Query("SELECT * FROM user WHERE _lid = :id")
+    User get(long id);
 
     @Insert
-    void insert(Post... posts);
+    long[] insert(User... users);
 
     @Update
-    void update(Post... posts);
+    void update(User... users);
 
     @Delete
-    void delete(Post... posts);
+    void delete(User... users);
 //
 //    @Query("SELECT * FROM post ORDER BY id DESC")
-//    MutableLiveData<List<Post>> getAll();
+//    MutableLiveData<List<User>> getAll();
 
     // will need to update version maybe
-    @Database(entities = {Post.class}, version = 1)
-    abstract class PostDB extends RoomDatabase {
-        //        private static PostDB instance;
-        public abstract PostDao postDao();
+    @Database(entities = {User.class}, version = 1)
+    abstract class UserDB extends RoomDatabase {
+        //        private static UserDB instance;
+        public abstract UserDao userDao();
 
-//        public static synchronized PostDB getInstance(Context context) {
+//        public static synchronized UserDB getInstance(Context context) {
 //            if (instance == null) {
 //                instance = Room.databaseBuilder(context.getApplicationContext(),
-//                        PostDB.class, "postDB").fallbackToDestructiveMigration().build();
+//                        UserDB.class, "postDB").fallbackToDestructiveMigration().build();
 //            } else {
 //                return instance;
 //            }

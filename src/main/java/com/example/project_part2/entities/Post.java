@@ -16,77 +16,46 @@ import java.util.Locale;
 
 @Entity
 public class Post {
-//    @PrimaryKey(autoGenerate = true)
 
+    @PrimaryKey(autoGenerate = true)
+    private long _lid;
     private String _id;
     private String content; // the post text content
     private String image; // the post image (when applicable)
     private final String authorId; // the post's authorId
-    private final String date; // the post's creation Date
+    private final String authorPfp;
+    private final String authorDisplayName;
+    private String date; // the post's creation Date
     private int likes;
     @Ignore
     private transient boolean liked;
 
-//    private final List<Comment> comments;
+//  BONUS
+//  private final List<Comment> comments;
 
-
-//    public Post() {
-//        // create default post
-//        this("I like trains", null, "");
-//    }
-
-    public Post (String content, String image, String authorId) {
+    public Post (String content, String image, String authorId, String authorPfp, String authorDisplayName) {
         this.content = content;
         this.image = image;
         this.authorId = authorId;
         this.date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        this.authorPfp = authorPfp;
+        this.authorDisplayName = authorDisplayName;
     }
-
-//    public Post () {
-//        content = "";
-//        image = "";
-//        authorId = "";
-//        date = "";
-//        likes = 0;
-//    }
-
-//    public Post(String content, String authorId) {
-//
-//        this.content = content;
-//
-//
-//        if (image != null) {
-//            this.image = image.toString();
-//        } else {
-//            this.image = null;
-//        }
-//        this.authorId = authorId;
-//
-//        this.date = new Date().toString();
-//
-//        // default stuff
-//        this.likes = 0;
-////        this.comments = new ArrayList<>();
-//    }
 
     public String getContent() {
         return this.content;
     }
 
-    public Uri getImage() {
-        if (this.image == null) {
-            return null;
-        }
-        String uriString = this.image.toString();
-        return Uri.parse(uriString);
-    }
+//    public Uri getImage() {
+//        if (this.image == null) {
+//            return null;
+//        }
+//        String uriString = this.image.toString();
+//        return Uri.parse(uriString);
+//    }
 
     public String getAuthorId() {
         return this.authorId;
-    }
-
-    public String getTimestamp() {
-        return this.date;
     }
 
     public void like() {
@@ -96,8 +65,20 @@ public class Post {
             { likes--; liked = false;}
     }
 
-    public boolean getLiked() {
-        return this.liked;
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
     }
 
     public int getLikeCount() {
@@ -108,8 +89,24 @@ public class Post {
         this.content = content;
     }
 
-    public void setImage(Uri imageUri) {
-        this.image = imageUri.toString();
+//    public void setImage(Uri imageUri) {
+//        this.image = imageUri.toString();
+//    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public boolean isLiked() {
+        return liked;
     }
 
 //    public List<Comment> getComments() {
@@ -120,7 +117,27 @@ public class Post {
 //        this.comments.add(comment);
 //    }
 
-    public String getId() {
-        return _id;
+    public long get_lid() {
+        return _lid;
+    }
+
+    public void set_lid(long _lid) {
+        this._lid = _lid;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setDate (String date) {
+        this.date = date;
+    }
+
+    public String getAuthorPfp() {
+        return authorPfp;
+    }
+
+    public String getAuthorDisplayName() {
+        return authorDisplayName;
     }
 }

@@ -2,17 +2,24 @@ package com.example.project_part2.entities;
 
 import android.net.Uri;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
 
 import java.util.List;
 
-
+@Entity
 public class User {
+
+    @PrimaryKey(autoGenerate = true)
+    private long _lid;
 
     private String _id;
 
-    private final String displayName;
+    private String displayName;
 
     private String username;
 
@@ -26,6 +33,7 @@ public class User {
 //
 //    private List<String> friendRequests;
 
+    @Ignore
     public User() {
         this("foobar", "foobar", "123", null);
     }
@@ -46,14 +54,43 @@ public class User {
         return this.displayName;
     }
 
-    public Uri getPfp() {
-        return Uri.parse(pfp);
+//    public Uri getPfp() {
+//        return Uri.parse(pfp);
+//    }
+    public String getPfp() {
+        return this.pfp;
     }
 
     public String id() { return _id; }
+
+    public long lid() { return _lid; }
 
     public String username() { return username; }
 
     public String password() { return password; }
 
+
+    public void set_lid(long _lid) {
+        this._lid = _lid;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setPfp(String pfp) {
+        this.pfp = pfp;
+    }
+
+    public void setDisplayName (String displayName) {
+        this.displayName = displayName;
+    }
 }

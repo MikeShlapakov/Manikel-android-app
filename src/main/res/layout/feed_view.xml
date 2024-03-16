@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/background">
+    android:background="@color/AppPrimary">
 
     <LinearLayout
         android:id="@+id/topFeedBar"
@@ -64,14 +64,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/botFeedBar"
-        android:layout_below="@+id/topFeedBar"/>
+        android:layout_below="@+id/topFeedBar"
+        android:background="@color/AppPrimary"/>
 
     <LinearLayout
         android:id="@+id/botFeedBar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:orientation="horizontal"
-        android:background="@drawable/button_background"
+        android:background="@color/AppSecondary"
         android:layout_alignParentBottom="true"
         android:gravity="center">
 

@@ -1,9 +1,12 @@
 package com.example.project_part2.apis;
 
+import android.widget.Toast;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
+import com.example.project_part2.entities.BodyRequests.PostBodyCreate;
 import com.example.project_part2.entities.Post;
 import com.example.project_part2.entities.User;
 import com.example.project_part2.util.MyApplication;
@@ -36,14 +39,16 @@ public class PostAPI {
 
     public void getPosts(MutableLiveData<List<Post>> posts) {
 
-        Call<List<Post>> call = webServiceAPI.getAllPosts(MyApplication.token);
+        Call<List<Post>> call = webServiceAPI.getAllPosts(MyApplication.token.getValue());
         call.enqueue(new Callback<List<Post>>() {
 
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
 
                 // setting posts of local db to response from server
-                posts.setValue(response.body());
+                if (response.body().size() != 0) {
+                    posts.setValue(response.body());
+                }
 //
 //                new Thread(() -> {
 //                    dao.clear();
@@ -60,21 +65,23 @@ public class PostAPI {
         });
     }
 
-    public void createPost(Post post) {
-        Call<Void> call = webServiceAPI.createPost(MainActivity.registeredUser.id(), "Bearer " + MyApplication.token, post);
+    public void createPost(String content, String image, String date) {
+
+        PostBodyCreate postBodyCreate = new PostBodyCreate(content, image, date);
+        Call<Void> call = webServiceAPI.createPost(MyApplication.registeredUser.getValue().id(), "Bearer " + MyApplication.token, postBodyCreate);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    // hello
+                    Toast.makeText(MyApplication.context, "post created successfully", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Handle error
+                    Toast.makeText(MyApplication.context, "failed to create post", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                // Handle failure
+                Toast.makeText(MyApplication.context, "failed to create post", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -57,7 +57,6 @@ public class FeedActivity extends AppCompatActivity {
     private ImageView newPostImageView;
     private EditText newPostEditText;
     private PostsViewModel viewModel;
-
     private PostAPI postAPI;
 
 
@@ -66,11 +65,11 @@ public class FeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_view);
 
+        // init posts repo
         // holds sample posts from the .json at first
         // this also asks for posts from serve
-
-
         viewModel = new ViewModelProvider(this).get(PostsViewModel.class);
+        postAPI = new PostAPI();
 
         ImageButton settingsButton = findViewById(R.id.settings);
 
@@ -90,7 +89,6 @@ public class FeedActivity extends AppCompatActivity {
 
         });
 
-
         setDarkMode();
 
         RecyclerView postList = findViewById(R.id.postList);
@@ -98,6 +96,9 @@ public class FeedActivity extends AppCompatActivity {
         postList.setAdapter(adapter);
         postList.setLayoutManager(new LinearLayoutManager(this));
 
+//        if (viewModel.getPosts() != null) {
+
+        // sets the posts
         adapter.setPosts(viewModel.getPosts().getValue());
 
         // if we change the viewModel posts this should be called
@@ -105,21 +106,24 @@ public class FeedActivity extends AppCompatActivity {
                 adapter.setPosts(posts);
                 adapter.notifyDataSetChanged();
         });
-
+//        }
         // set the user info display
         setUserInfoFeed();
     }
 
-
     private void setUserInfoFeed() {
         TextView activeUserInfo = findViewById(R.id.displayName);
-        String displayName = MainActivity.registeredUser.getDisplayName();
+        String displayName = MyApplication.registeredUser.getValue().getDisplayName();
         activeUserInfo.setText(displayName);
 
         ImageView activeUserPic = findViewById(R.id.pfp);
-        activeUserPic.setImageURI(MainActivity.registeredUser.getPfp());
+        // TODO
+        if (MyApplication.registeredUser.getValue().getPfp() == null) {
+            activeUserPic.setImageURI(null);
+        } else {
+            activeUserPic.setImageURI(Uri.parse(MyApplication.registeredUser.getValue().getPfp()));
+        }
     }
-
 
     public void setDarkMode() {
         SwitchMaterial darkModeSwitch = findViewById(R.id.darkModeSwitch);
@@ -148,11 +152,6 @@ public class FeedActivity extends AppCompatActivity {
         }
     }
 
-    public void logout(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
-
     public void addPost(View view) {
         showAddDialog();
     }
@@ -172,6 +171,7 @@ public class FeedActivity extends AppCompatActivity {
         newPostEditText = dialogView.findViewById(R.id.postText);
         newPostImageView = dialogView.findViewById(R.id.postPicture);
 
+        // add post
         dialogBuilder.setView(dialogView)
                 .setTitle("Add Post")
                 .setPositiveButton("Add", (dialog, which) -> {
@@ -186,13 +186,15 @@ public class FeedActivity extends AppCompatActivity {
                     } else {
 //                        Uri imageUri = Uri.parse(imageUriString);
 
-                        Post newPost = new Post(content, imageUriString, MainActivity.registeredUser.id());
+                        Post newPost = new Post(content, imageUriString, MyApplication.registeredUser.getValue().id(), MyApplication.registeredUser.getValue().getPfp(), MyApplication.registeredUser.getValue().getDisplayName());
 
-                        // TODO
-                        postAPI.createPost(newPost);
+                        // send newPost to server
+                        postAPI.createPost(newPost.getContent(), newPost.getImage(), newPost.getDate());
 
-                        // TODO: how to add post?
-//                      postList.add(newPost);
+                        if (viewModel.getPosts().getValue() != null) { viewModel.getPosts().getValue().add(newPost); }
+                        
+//                         TODO: how to add post?
+//                        postList.add(newPost);
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());

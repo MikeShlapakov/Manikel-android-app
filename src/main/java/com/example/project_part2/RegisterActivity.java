@@ -19,6 +19,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.project_part2.apis.UserAPI;
 import com.example.project_part2.entities.User;
+import com.example.project_part2.util.MyApplication;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,11 +42,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     private UserAPI userAPI;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        userAPI = new UserAPI();
 
         // identify the invalidInput TextView to display errors in it later
         invalidInputTV = findViewById(R.id.invalidInput);
@@ -114,8 +116,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         return validPassword;
     }
-
-
     private boolean validateVerify(String verify) {
         String password = passwordET.getText().toString();
 
@@ -139,21 +139,28 @@ public class RegisterActivity extends AppCompatActivity {
         boolean validVerify = validateVerify(secondPassword);
         boolean validPassword = validatePassword(password);
 
-        // if all is good, register and goto feed
-        // TODO: check password with server
         if (validPassword && validVerify) {
 
-            MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
-            User temp = new User(firstNameET.getText().toString() + lastNameET.getText().toString(),
+            String picString;
+
+//          if (pic_taken == null) { picString = "pfp"; } else {  picString = pic_taken.toString(); }
+            picString = "pfp";
+
+            User newUser = new User(firstNameET.getText().toString() + lastNameET.getText().toString(),
                                                    usernameET.getText().toString(),
                                                    passwordET.getText().toString(),
-                                                   pic_taken.toString());
+                                                   picString);
 
-            // TODO
-            userAPI.createUser(temp);
-            MainActivity.registeredUser = userAPI.getUserByUsername(temp.username());
+            // set registeredUser to the new user
+            MyApplication.registeredUser.setValue(newUser);
 
-            Intent intent = new Intent(this, FeedActivity.class);
+            // add new user to local db, via registeredUser
+            MyApplication.insertRegisteredUserToLocalDB();
+
+            // update MyApplication.registeredUser asynchronously, will give it its id
+            userAPI.createUser(newUser.getDisplayName(), newUser.username(), newUser.password(), newUser.getPfp());
+
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
 
         } else {
@@ -179,7 +186,6 @@ public class RegisterActivity extends AppCompatActivity {
         // Launch activity
         startActivityForResult(combinedIntent, UPLOAD_PIC_REQUEST);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

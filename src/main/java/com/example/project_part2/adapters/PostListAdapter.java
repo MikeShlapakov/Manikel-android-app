@@ -3,6 +3,7 @@ package com.example.project_part2.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -84,70 +85,33 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
             Post current = posts.get(position);
 
             // TODO
-            MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
-            userAPI.getUserById(userMutableLiveData, current.getAuthorId());
-            User u = userMutableLiveData.getValue();
+//            MutableLiveData<User> userMutableLiveData = new MutableLiveData<>();
+//            userAPI.getUserById(userMutableLiveData, current.getAuthorId());
+//            User u = userMutableLiveData.getValue();
 
-            if (u != null ) { holder.pfp.setImageURI(u.getPfp()); }
-
-            holder.pfp.setOnClickListener(item -> {
-
-                PopupMenu popup = new PopupMenu(MyApplication.context, holder.pfp);
-                popup.getMenuInflater().inflate(R.menu.post_options_menu, popup.getMenu());
-
-                // TODO: server
-//                if (!areFriends(MainActivity.registeredUser, current.getAuthor())) {
-//                    MenuItem seePostsItem = popup.getMenu().findItem(R.id.see_posts);
-//                    seePostsItem.setEnabled(false);
-//                }
-
-                popup.setOnMenuItemClickListener(item1 -> {
-                        if (item1.getItemId() == R.id.add_friend) {
-                            Toast.makeText(MyApplication.context, "friend request sent", Toast.LENGTH_SHORT).show();
-                            return true;
-                        }
-                        else if (item1.getItemId() == R.id.see_posts) {
-                            Toast.makeText(MyApplication.context, "entering friend's posts", Toast.LENGTH_SHORT).show();
-
-                            // i want to start the activity but this class isnt of type AppcompatActivity
-                            Intent intent = new Intent(MyApplication.context, PersonalFeedActivity.class);
-//                            startActivity(intent);
-                            mInflater.getContext().startActivity(intent);
-
-                            return true;
-                        }
-                        return false;
-                });
-
-                popup.show();
-            });
-
-
-
-            String displayName = current.getAuthorId();
-            holder.authorName.setText(displayName);
-            holder.content.setText(current.getContent());
-            holder.timestamp.setText(current.getTimestamp());
-//            holder.likeCount.setText(current.getLikeCount());
+            if (current.getAuthorPfp() != null ) { holder.pfp.setImageURI(Uri.parse(current.getAuthorPfp())); }
 
             // reduce view height if image is missing
             if (current.getImage() == null) {
                 holder.contentImg.setVisibility(View.GONE);
             } else {
-                holder.contentImg.setImageURI(current.getImage());
+                holder.contentImg.setImageURI(Uri.parse(current.getImage()));
                 holder.contentImg.setVisibility(View.VISIBLE);
             }
 
+            holder.authorName.setText(current.getAuthorDisplayName());
+            holder.content.setText(current.getContent());
+            holder.timestamp.setText(current.getDate());
+//            holder.likeCount.setText(current.getLikeCount());
 
             setLikeColor(current, holder.likeBtn);
             // add on click listener for like button
             holder.likeCount.setText(Integer.toString(current.getLikeCount()));
             holder.likeBtn.setOnClickListener(v -> onLikeClicked(current, holder.likeBtn, holder.likeCount));
-//            holder.timestamp.setTag(current.getUrl()); // holds the post URL as String
 
             // Set up the comments RecyclerView
-            LinearLayoutManager layoutManager = new LinearLayoutManager(holder.itemView.getContext());
-            holder.rvComments.setLayoutManager(layoutManager);
+//            LinearLayoutManager layoutManager = new LinearLayoutManager(holder.itemView.getContext());
+//            holder.rvComments.setLayoutManager(layoutManager);
 
             // Create an adapter for the comments
             // use default user icon for comment author instead of custom user icon.
@@ -166,6 +130,39 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 
             // add comment listener on content
             holder.content.setOnClickListener((v) -> editPost(position));
+
+            // clickable pfp
+            holder.pfp.setOnClickListener(item -> {
+
+                PopupMenu popup = new PopupMenu(MyApplication.context, holder.pfp);
+                popup.getMenuInflater().inflate(R.menu.post_options_menu, popup.getMenu());
+
+                // TODO: server
+//                if (!areFriends(MainActivity.registeredUser, current.getAuthor())) {
+//                    MenuItem seePostsItem = popup.getMenu().findItem(R.id.see_posts);
+//                    seePostsItem.setEnabled(false);
+//                }
+
+                popup.setOnMenuItemClickListener(item1 -> {
+                    if (item1.getItemId() == R.id.add_friend) {
+                        Toast.makeText(MyApplication.context, "friend request sent", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                    else if (item1.getItemId() == R.id.see_posts) {
+                        Toast.makeText(MyApplication.context, "entering friend's posts", Toast.LENGTH_SHORT).show();
+
+                        // i want to start the activity but this class isnt of type AppcompatActivity
+                        Intent intent = new Intent(MyApplication.context, PersonalFeedActivity.class);
+//                            startActivity(intent);
+                        mInflater.getContext().startActivity(intent);
+
+                        return true;
+                    }
+                    return false;
+                });
+
+                popup.show();
+            });
 
             holder.itemView.requestLayout();
             holder.postLayout.requestLayout();
@@ -199,7 +196,7 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
     }
 
     private void setLikeColor(Post current, ImageButton likeBtn) {
-        if (current.getLiked()) {
+        if (current.isLiked()) {
             likeBtn.setImageResource(R.drawable.like_bold);
         } else {
             likeBtn.setImageResource(R.drawable.like);

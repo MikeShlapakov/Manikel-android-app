@@ -4,8 +4,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <!--    light colors-->
-    <color name="AppPrimary">#9DBCEA</color>
-    <color name="AppSecondary">#3C90F6</color>
+    <color name="AppPrimary">#E5E9EF</color>
+    <color name="AppSecondary">#2168BD</color>
     <color name="background">#F6EBFF</color>
     <color name="textPrimary">#2E2B39</color>
     <color name="textSecondary">#F1EFF6</color>

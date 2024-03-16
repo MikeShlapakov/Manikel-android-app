@@ -1,10 +1,14 @@
 package com.example.project_part2.apis;
 
+import android.widget.Toast;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.project_part2.FeedActivity;
 import com.example.project_part2.MainActivity;
 import com.example.project_part2.R;
+import com.example.project_part2.entities.BodyRequests.FriendBodySend;
+import com.example.project_part2.entities.BodyRequests.UserBody;
 import com.example.project_part2.entities.Post;
 import com.example.project_part2.entities.User;
 import com.example.project_part2.util.MyApplication;
@@ -37,13 +41,19 @@ public class UserAPI {
     }
 
     // doesn't have token when accessing these functions
-    public void createUser(User user) {
+    // this will update registeredUser
+    public void createUser(String displayName, String username, String password, String pfp) {
 
-        Call<Void> call = webServiceAPI.createUser(user);
+        UserBody userBody = new UserBody(displayName, username, password, pfp);
+        Toast.makeText(MyApplication.context, "creating user", Toast.LENGTH_SHORT).show();
+        Call<Void> call = webServiceAPI.createUser(userBody);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                // Handle response
+                // after the user was created, update him
+                updateUser(MyApplication.registeredUser);
+//                MyApplication.registeredUser.setValue(getUserByUsername(MyApplication.registeredUser.getValue().username()));
+                Toast.makeText(MyApplication.context, "user created successfully", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -72,22 +82,61 @@ public class UserAPI {
         });
     }
 
-    public User getUserByUsername (String username) {
+    // sets the value to the user with the same username that's on server
+    // CHECK
+    public void updateUser (MutableLiveData<User> user) {
 
-        MutableLiveData<List<User>> usersLiveData = new MutableLiveData<>();
-        getUsers(usersLiveData);
+        Call<List<User>> call = webServiceAPI.getUsers();
+        call.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
 
-        List<User> userList = usersLiveData.getValue();
+                if (response.isSuccessful()) {
 
-        if (userList == null) { return null; }
+                    List<User> userList = response.body();
 
-        for (User u : userList) {
-            if (u.username().equals(username)) {
-                return u;
+                    if (userList == null) { return; }
+
+                    for (User u : userList) {
+                        if (user.getValue() != null && u.username().equals(user.getValue().username())) {
+                            u.set_lid(user.getValue().lid());
+                            user.setValue(u);
+                        }
+                    }
+                } else {
+                    return;
+                }
             }
-        }
-        return null;
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                return;
+            }
+        });
     }
+
+//    public void updateUserViaUsername (String username) {
+//
+//        MutableLiveData<List<User>> usersLiveData = new MutableLiveData<>();
+//        getUsers(usersLiveData);
+//
+//        try {
+//            Thread.sleep(3000);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        List<User> userList = usersLiveData.getValue();
+//
+//        if (userList == null) { return null; }
+//
+//        for (User u : userList) {
+//            if (u.username().equals(username)) {
+//                return u;
+//            }
+//        }
+//        return null;
+//    }
 
 
     public void getUserById(MutableLiveData<User> userLiveData, String id) {
@@ -99,13 +148,13 @@ public class UserAPI {
                 if (response.isSuccessful()) {
                     userLiveData.postValue(response.body());
                 } else {
-                    // Handle error response
+                    userLiveData.postValue(null);
                 }
             }
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
-                // Handle failure
+                userLiveData.postValue(null);
             }
         });
     }
@@ -131,7 +180,9 @@ public class UserAPI {
     }
 
     public void sendFriendRequest(String dstId) {
-        Call<Post> call = webServiceAPI.sendFriendRequest(dstId, "Bearer " + MyApplication.token, MainActivity.registeredUser.id());
+
+        FriendBodySend friendBodySend = new FriendBodySend(dstId);
+        Call<Post> call = webServiceAPI.sendFriendRequest(dstId, "Bearer " + MyApplication.token, friendBodySend);
         call.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.project_part2.R;
+import com.example.project_part2.entities.BodyRequests.TokenBody;
 import com.example.project_part2.entities.Post;
 import com.example.project_part2.entities.User;
 import com.example.project_part2.util.MyApplication;
@@ -31,13 +32,15 @@ public class TokenAPI {
         webServiceAPI = retrofit.create(WebServiceAPI.class);
     }
 
-    public void createToken(MutableLiveData<String> tokenLiveData) {
+    public void createToken(String id, MutableLiveData<String> tokenLiveData) {
 
-        Call<String> call = webServiceAPI.createToken();
+        TokenBody tokenBody = new TokenBody(id);
+
+        Call<String> call = webServiceAPI.createToken(tokenBody);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-
+                System.out.println("response");
                 if (response.isSuccessful()) {
                     tokenLiveData.postValue(response.body());
                 } else {
@@ -47,7 +50,7 @@ public class TokenAPI {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                System.out.println("failure");
             }
         });
     }

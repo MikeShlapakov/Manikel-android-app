@@ -1,5 +1,6 @@
 package com.example.project_part2;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.project_part2.adapters.PostListAdapter;
+import com.example.project_part2.util.MyApplication;
 import com.example.project_part2.viewmodels.PostsViewModel;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -37,11 +39,11 @@ public class PersonalFeedActivity extends AppCompatActivity {
 
 
         TextView activeUserInfo = findViewById(R.id.displayName);
-        String displayName = MainActivity.registeredUser.getDisplayName();
+        String displayName = MyApplication.registeredUser.getValue().getDisplayName();
         activeUserInfo.setText(displayName);
 
         ImageView activeUserPic = findViewById(R.id.pfp);
-        activeUserPic.setImageURI(MainActivity.registeredUser.getPfp());
+        activeUserPic.setImageURI(Uri.parse(MyApplication.registeredUser.getValue().getPfp()));
 
 
         SwitchMaterial darkModeSwitch = findViewById(R.id.darkModeSwitch);

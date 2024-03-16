@@ -7,9 +7,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
+import com.example.project_part2.MainActivity;
 import com.example.project_part2.apis.PostAPI;
 import com.example.project_part2.entities.Post;
-import com.example.project_part2.entities.PostDao;
+//import com.example.project_part2.entities.PostDao;
 import com.example.project_part2.entities.User;
 import com.example.project_part2.util.MyApplication;
 
@@ -19,7 +20,7 @@ import java.util.List;
 public class PostsRepository {
 
 //    private static MutableLiveData<List<Post>> posts;
-    private PostDao postDao;
+//    private PostDao postDao;
     private static PostListData postListData;
     private PostAPI api;
 
@@ -54,21 +55,22 @@ public class PostsRepository {
             new Thread (() -> {
 
                 List<Post> posts = new LinkedList<>();
+
                 // observers will get updated from these changes
-                posts.add(new Post("lorem lorem", null, new User("hello", "hello", null)));
-                posts.add(new Post("lorem lorem2", null, new User("hello2", "hello2", null)));
-                posts.add(new Post("lorem lorem3", null, new User("hello3", "hello3", null)));
-//                setValue(posts);
-
-                // "this" will have the value of posts
+                posts.add(new Post("lorem lorem", null, "", "", "grandimama"));
+                posts.add(new Post("lorem lorem2", null, "", "", "fufi"));
+                posts.add(new Post("lorem lorem3", null, "", "", "mome"));
                 postValue(posts);
+
+//              // "this" will have the value of posts
+//                postValue(posts);
 //                setValue(posts);
 
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
 
                 System.out.println("done sleepin");
                 PostAPI postAPI = new PostAPI();
