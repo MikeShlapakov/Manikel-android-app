@@ -8,10 +8,12 @@ public class PostBodyCreate {
     String authorPfp;
     String authorDisplayName;
 
-    public PostBodyCreate(String content, String image, String date) {
+    public PostBodyCreate(String content, String image, String date, String authorPfp, String authorDisplayName) {
         this.content = content;
         this.image = image;
         this.date = date;
+        this.authorPfp = authorPfp;
+        this.authorDisplayName = authorDisplayName;
     }
 
     public String getContent() {

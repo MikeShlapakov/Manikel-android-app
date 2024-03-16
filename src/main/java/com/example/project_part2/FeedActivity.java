@@ -2,6 +2,7 @@ package com.example.project_part2;
 
 import static com.example.project_part2.RegisterActivity.UPLOAD_PIC_REQUEST;
 import static com.example.project_part2.util.MyApplication.context;
+import static com.example.project_part2.util.MyApplication.registeredUser;
 import static com.example.project_part2.util.MyApplication.token;
 
 import android.app.AlertDialog;
@@ -189,10 +190,10 @@ public class FeedActivity extends AppCompatActivity {
                         Post newPost = new Post(content, imageUriString, MyApplication.registeredUser.getValue().id(), MyApplication.registeredUser.getValue().getPfp(), MyApplication.registeredUser.getValue().getDisplayName());
 
                         // send newPost to server
-                        postAPI.createPost(newPost.getContent(), newPost.getImage(), newPost.getDate());
+                        postAPI.createPost(newPost.getContent(), newPost.getImage(), newPost.getDate(), MyApplication.registeredUser.getValue().getPfp(), MyApplication.registeredUser.getValue().getDisplayName());
 
                         if (viewModel.getPosts().getValue() != null) { viewModel.getPosts().getValue().add(newPost); }
-                        
+
 //                         TODO: how to add post?
 //                        postList.add(newPost);
                     }

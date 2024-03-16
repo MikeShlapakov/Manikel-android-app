@@ -65,9 +65,9 @@ public class PostAPI {
         });
     }
 
-    public void createPost(String content, String image, String date) {
+    public void createPost(String content, String image, String date, String authorPfp, String authorDisplayName) {
 
-        PostBodyCreate postBodyCreate = new PostBodyCreate(content, image, date);
+        PostBodyCreate postBodyCreate = new PostBodyCreate(content, image, date, authorPfp, authorDisplayName);
         Call<Void> call = webServiceAPI.createPost(MyApplication.registeredUser.getValue().id(), "Bearer " + MyApplication.token, postBodyCreate);
         call.enqueue(new Callback<Void>() {
             @Override
