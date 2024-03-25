@@ -1,4 +1,8 @@
 ## Android
+
+server: [link](https://github.com/MikeShlapakov/Manikel-server-side) <br>
+web app: [link](https://github.com/MikeShlapakov/Manikel-web-app/tree/Part3) <br>
+
 <br>
 Implemented using the MVVM architecture, 
 using retrofit2 to handle API requests to and from server.
