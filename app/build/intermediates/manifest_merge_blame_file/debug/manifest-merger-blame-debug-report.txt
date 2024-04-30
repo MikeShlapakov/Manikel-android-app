@@ -1,0 +1,173 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.project_part2"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:5:5-66
+11-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:5:22-64
+12
+13    <permission
+13-->[androidx.core:core:1.9.0] /Users/manuel/.gradle/caches/transforms-3/16088aea6844a21f0ae8707202a192eb/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+14        android:name="com.example.project_part2.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+14-->[androidx.core:core:1.9.0] /Users/manuel/.gradle/caches/transforms-3/16088aea6844a21f0ae8707202a192eb/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+15        android:protectionLevel="signature" />
+15-->[androidx.core:core:1.9.0] /Users/manuel/.gradle/caches/transforms-3/16088aea6844a21f0ae8707202a192eb/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
+16
+17    <uses-permission android:name="com.example.project_part2.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+17-->[androidx.core:core:1.9.0] /Users/manuel/.gradle/caches/transforms-3/16088aea6844a21f0ae8707202a192eb/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
+17-->[androidx.core:core:1.9.0] /Users/manuel/.gradle/caches/transforms-3/16088aea6844a21f0ae8707202a192eb/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+18
+19    <application
+19-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:7:5-40:19
+20        android:name="com.example.project_part2.util.MyApplication"
+20-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:8:9-43
+21        android:allowBackup="true"
+21-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:9:9-35
+22        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+22-->[androidx.core:core:1.9.0] /Users/manuel/.gradle/caches/transforms-3/16088aea6844a21f0ae8707202a192eb/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
+23        android:dataExtractionRules="@xml/data_extraction_rules"
+23-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:10:9-65
+24        android:debuggable="true"
+25        android:extractNativeLibs="false"
+26        android:fullBackupContent="@xml/backup_rules"
+26-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:11:9-54
+27        android:icon="@mipmap/ic_launcher"
+27-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:12:9-43
+28        android:label="@string/app_name"
+28-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:13:9-41
+29        android:roundIcon="@mipmap/ic_launcher_round"
+29-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:15:9-54
+30        android:supportsRtl="true"
+30-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:16:9-35
+31        android:testOnly="true"
+32        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+32-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:14:9-68
+33        android:usesCleartextTraffic="true" >
+33-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:18:9-44
+34        <activity
+34-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:20:9-23:51
+35            android:name="com.example.project_part2.RegisterActivity"
+35-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:21:13-45
+36            android:exported="false"
+36-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:22:13-37
+37            android:screenOrientation="portrait" />
+37-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:23:13-49
+38        <activity
+38-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:24:9-27:51
+39            android:name="com.example.project_part2.PersonalFeedActivity"
+39-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:25:13-49
+40            android:exported="false"
+40-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:26:13-37
+41            android:screenOrientation="portrait" />
+41-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:27:13-49
+42        <activity
+42-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:28:9-36:20
+43            android:name="com.example.project_part2.MainActivity"
+43-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:29:13-41
+44            android:exported="true"
+44-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:30:13-36
+45            android:screenOrientation="portrait" >
+45-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:31:13-49
+46            <intent-filter>
+46-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:32:13-35:29
+47                <action android:name="android.intent.action.MAIN" />
+47-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:33:17-69
+47-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:33:25-66
+48
+49                <category android:name="android.intent.category.LAUNCHER" />
+49-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:34:17-77
+49-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:34:27-74
+50            </intent-filter>
+51        </activity>
+52        <activity
+52-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:37:9-39:51
+53            android:name="com.example.project_part2.FeedActivity"
+53-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:37:19-47
+54            android:exported="false"
+54-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:38:13-37
+55            android:screenOrientation="portrait" />
+55-->/Users/manuel/Code/manikel/Manikel-android-app/app/src/main/AndroidManifest.xml:39:13-49
+56
+57        <service
+57-->[androidx.room:room-runtime:2.6.1] /Users/manuel/.gradle/caches/transforms-3/d6cc9cc8f0e884d2f28b25fe6238f01d/transformed/room-runtime-2.6.1/AndroidManifest.xml:24:9-28:63
+58            android:name="androidx.room.MultiInstanceInvalidationService"
+58-->[androidx.room:room-runtime:2.6.1] /Users/manuel/.gradle/caches/transforms-3/d6cc9cc8f0e884d2f28b25fe6238f01d/transformed/room-runtime-2.6.1/AndroidManifest.xml:25:13-74
+59            android:directBootAware="true"
+59-->[androidx.room:room-runtime:2.6.1] /Users/manuel/.gradle/caches/transforms-3/d6cc9cc8f0e884d2f28b25fe6238f01d/transformed/room-runtime-2.6.1/AndroidManifest.xml:26:13-43
+60            android:exported="false" />
+60-->[androidx.room:room-runtime:2.6.1] /Users/manuel/.gradle/caches/transforms-3/d6cc9cc8f0e884d2f28b25fe6238f01d/transformed/room-runtime-2.6.1/AndroidManifest.xml:27:13-37
+61
+62        <provider
+62-->[androidx.emoji2:emoji2:1.2.0] /Users/manuel/.gradle/caches/transforms-3/ea260942d8acadff20549e4d8b1553b4/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+63            android:name="androidx.startup.InitializationProvider"
+63-->[androidx.emoji2:emoji2:1.2.0] /Users/manuel/.gradle/caches/transforms-3/ea260942d8acadff20549e4d8b1553b4/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
+64            android:authorities="com.example.project_part2.androidx-startup"
+64-->[androidx.emoji2:emoji2:1.2.0] /Users/manuel/.gradle/caches/transforms-3/ea260942d8acadff20549e4d8b1553b4/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
+65            android:exported="false" >
+65-->[androidx.emoji2:emoji2:1.2.0] /Users/manuel/.gradle/caches/transforms-3/ea260942d8acadff20549e4d8b1553b4/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
+66            <meta-data
+66-->[androidx.emoji2:emoji2:1.2.0] /Users/manuel/.gradle/caches/transforms-3/ea260942d8acadff20549e4d8b1553b4/transformed/emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+67                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+67-->[androidx.emoji2:emoji2:1.2.0] /Users/manuel/.gradle/caches/transforms-3/ea260942d8acadff20549e4d8b1553b4/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
+68                android:value="androidx.startup" />
+68-->[androidx.emoji2:emoji2:1.2.0] /Users/manuel/.gradle/caches/transforms-3/ea260942d8acadff20549e4d8b1553b4/transformed/emoji2-1.2.0/AndroidManifest.xml:31:17-49
+69            <meta-data
+69-->[androidx.lifecycle:lifecycle-process:2.6.1] /Users/manuel/.gradle/caches/transforms-3/7537b831cd7e02c36f17372471ebcd05/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:29:13-31:52
+70                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+70-->[androidx.lifecycle:lifecycle-process:2.6.1] /Users/manuel/.gradle/caches/transforms-3/7537b831cd7e02c36f17372471ebcd05/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:30:17-78
+71                android:value="androidx.startup" />
+71-->[androidx.lifecycle:lifecycle-process:2.6.1] /Users/manuel/.gradle/caches/transforms-3/7537b831cd7e02c36f17372471ebcd05/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:31:17-49
+72            <meta-data
+72-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+73                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+73-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+74                android:value="androidx.startup" />
+74-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+75        </provider>
+76
+77        <receiver
+77-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+78            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+78-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+79            android:directBootAware="false"
+79-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+80            android:enabled="true"
+80-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+81            android:exported="true"
+81-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+82            android:permission="android.permission.DUMP" >
+82-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+83            <intent-filter>
+83-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+84                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+84-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+85            </intent-filter>
+86            <intent-filter>
+86-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+87                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+88            </intent-filter>
+89            <intent-filter>
+89-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+90                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+90-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+91            </intent-filter>
+92            <intent-filter>
+92-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+93                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+93-->[androidx.profileinstaller:profileinstaller:1.3.0] /Users/manuel/.gradle/caches/transforms-3/6aebe797d2fce5c8727f4e04e3cbbf9a/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+94            </intent-filter>
+95        </receiver>
+96    </application>
+97
+98</manifest>

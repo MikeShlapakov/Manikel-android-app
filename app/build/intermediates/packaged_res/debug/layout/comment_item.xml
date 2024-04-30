@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/ivProfileComment"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:src="@drawable/ddog2"
+                            android:layout_alignParentStart="true"
+                            android:padding="5dp"
+                            android:importantForAccessibility="no"
+                            android:layout_weight="0"/>
+
+                        <TextView
+                            android:id="@+id/tvComment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="15dp"
+                            android:text="@string/sample_comment"
+                            tools:ignore="RelativeOverlap"
+                            android:layout_weight="1"/>
+
+                        <ImageButton
+                            android:id="@+id/btnEditComment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_edit" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1d"
+                            android:paddingStart="40dp"/>
+
+                        <Button
+                            android:layout_width="60dp"
+                            android:layout_height="20dp"
+                            android:background="@android:color/transparent"
+                            android:text="Like"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/tertiary_text_dark"
+                            android:textStyle="normal"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/like_count"
+                            android:layout_gravity="center_vertical"
+                            android:paddingStart="10dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="15"
+                            android:paddingHorizontal="5dp"/>
+
+                </LinearLayout>
+        </LinearLayout>
+</RelativeLayout>

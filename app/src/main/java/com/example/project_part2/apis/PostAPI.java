@@ -17,8 +17,12 @@ import com.example.project_part2.entities.User;
 import com.example.project_part2.util.MyApplication;
 import com.example.project_part2.viewmodels.PostsViewModel;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Callback;
@@ -43,36 +47,6 @@ public class PostAPI {
         webServiceAPI = retrofit.create(WebServiceAPI.class);
     }
 
-//    public void getPosts(MutableLiveData<List<Post>> posts) {
-//
-//        Call<List<Post>> call = webServiceAPI.getFeedPosts(MyApplication.token.getValue());
-//        call.enqueue(new Callback<List<Post>>() {
-//
-//            @Override
-//            public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
-//
-//                if (response.isSuccessful()) {
-//                    // setting posts of local db to response from server
-//                    if (response.body().size() != 0) {
-//                        posts.setValue(response.body());
-//                    }
-//                } else { Toast.makeText(MyApplication.context, "error getting posts", Toast.LENGTH_SHORT).show(); }
-//
-////
-////                new Thread(() -> {
-////                    dao.clear();
-////                    dao.insertList(response.body());
-////                    postListData.postValue(dao.get());
-////                }).start()
-//            }
-//
-//
-//            @Override
-//            public void onFailure(Call<List<Post>> call, Throwable t) {
-//                Toast.makeText(MyApplication.context, "error getting posts", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
 
     public void createPost(Post newPost, PostsViewModel viewModel) {
 
@@ -86,12 +60,16 @@ public class PostAPI {
                     Toast.makeText(MyApplication.context, "post created successfully", Toast.LENGTH_SHORT).show();
                     if (viewModel.getPosts().getValue() != null) {
                         List<Post> newPosts = viewModel.getPosts().getValue();
-                        newPosts.add(response.body());
+                        newPosts.add(0, response.body());
                         viewModel.getPosts().setValue(newPosts);
                     }
 
                 } else {
-                    Toast.makeText(MyApplication.context, "failed to create post", Toast.LENGTH_SHORT).show();
+                    if (response.code() == 403) {
+                        Toast.makeText(MyApplication.context, "malicious URL spotted in post, aborting current action", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MyApplication.context, "failed to create post", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -104,7 +82,8 @@ public class PostAPI {
 
     public void editPost(Post updatedPost, EditText editText, RecyclerView.Adapter<PostListAdapter.PostViewHolder> adapter) {
 
-        PostBodyEdit postBodyEdit = new PostBodyEdit(updatedPost.getContent(), updatedPost.getImage(), Integer.toString(updatedPost.getLikes()), null);
+
+        PostBodyEdit postBodyEdit = new PostBodyEdit(editText.getText().toString(), updatedPost.getImage(), Integer.toString(updatedPost.getLikes()), null);
 
         Call<Void> call = webServiceAPI.editPost(MyApplication.registeredUser.getValue().id(), updatedPost.get_id(),"Bearer " + MyApplication.token.getValue(), postBodyEdit);
         call.enqueue(new Callback<Void>() {
@@ -117,7 +96,11 @@ public class PostAPI {
                     updatedPost.setContent(newText);
                     adapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(MyApplication.context, "failed to edit post", Toast.LENGTH_SHORT).show();
+                    if (response.code() == 403) {
+                        Toast.makeText(MyApplication.context, "malicious URL spotted in post, aborting current action", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MyApplication.context, "failed to edit post", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             @Override
@@ -183,8 +166,9 @@ public class PostAPI {
                 if (response.isSuccessful()) {
                     // setting posts of local db to response from server
                     if (response.body() != null && response.body().size() != 0) {
-                        posts.setValue(null);
+//                        posts.setValue(null);
                         posts.setValue(response.body());
+                        System.out.println("first img" + response.body().get(0).getImage());
                     }
                 } else { Toast.makeText(MyApplication.context, "error feed posts", Toast.LENGTH_SHORT).show(); }
             }

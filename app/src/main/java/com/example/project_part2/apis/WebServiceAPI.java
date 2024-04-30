@@ -29,7 +29,7 @@ public interface WebServiceAPI {
     // ===================  TOKENS =======================
 
     @POST("tokens/")
-        Call<String> createToken(@Body TokenBody body);
+    Call<String> createToken(@Body TokenBody body);
 
     @GET("tokens/{id}")
     Call<Boolean> isLoggedIn(@Path("id") String id);

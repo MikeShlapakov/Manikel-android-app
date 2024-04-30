@@ -97,11 +97,13 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
 
             if (current.getAuthorPfp() != null ) { holder.pfp.setImageURI(Uri.parse(current.getAuthorPfp())); }
 
+            Uri u = ImageUtil.decodeBase64ToUri(current.getImage(), MyApplication.context);
             // reduce view height if image is missing
-            if (current.getImage().equals("") || ImageUtil.decodeBase64ToUri(current.getImage(), MyApplication.context) == null) {
+            if (current.getImage().equals("") || u == null) {
                 holder.contentImg.setVisibility(View.GONE);
             } else {
-                holder.contentImg.setImageURI(ImageUtil.decodeBase64ToUri(current.getImage(), MyApplication.context));
+                holder.contentImg.setImageURI(null);
+                holder.contentImg.setImageURI(u);
                 holder.contentImg.setVisibility(View.VISIBLE);
             }
 
@@ -196,6 +198,9 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostVi
                     });
 
                     popup.show();
+
+                } else {
+
                 }
             });
 

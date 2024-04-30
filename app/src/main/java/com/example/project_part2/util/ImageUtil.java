@@ -16,17 +16,21 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 public class ImageUtil {
 
+    enum formats {PNG, JPEG, WEBP};
+
     public static Uri decodeBase64ToUri(String base64String, Context context) {
+
+        // 0 png, 1 jpeg, 2 webp
 
         // Check if the base64String contains the data URI prefix and remove it before decoding
         if (base64String.startsWith("data:image/png;base64,")) {
             base64String = base64String.substring("data:image/png;base64,".length());
-
         } else if (base64String.startsWith("data:image/jpeg;base64,")) {
             base64String = base64String.substring("data:image/png;base64,".length());
 
@@ -52,6 +56,10 @@ public class ImageUtil {
 
         File imageFile = new File(context.getCacheDir(), "decodedImage.png");
 
+        if (imageFile.exists()) {
+            imageFile.delete();
+        }
+
         try {
             OutputStream os = new FileOutputStream(imageFile);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
@@ -62,6 +70,8 @@ public class ImageUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println("problem");
         return null;
     }
 
@@ -86,4 +96,28 @@ public class ImageUtil {
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
+
+    public static Bitmap getBitmapFromUri(Context context, Uri uri) {
+        Bitmap bitmap = null;
+        if (uri == null) {
+            return null;
+        }
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getContentResolver().openInputStream(uri);
+            bitmap = BitmapFactory.decodeStream(inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return bitmap;
+    }
+
 }
